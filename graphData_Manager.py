@@ -65,6 +65,8 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
 
     def uploadData(self, filepath):
         # Step-1 : read the data into pandas
+        
+        # ---------- CSV 
         if filepath.endswith(".csv"):
             global df1,df2,df3,df4,df5,df6
             #df1 -> journal article         // columns = 'id', 'title', 'type', 'publication_year', 'issue', 'volume'
@@ -76,7 +78,8 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             df1,df2,df3,df4,df5,df6 = readCSV(filepath)
 
             #REMEMBER TO CHANGE THE 'id' column to 'doi' to match the json column name
-    
+            
+        # ---------- JSON 
         elif filepath.endswith(".json"):
             #df7  -> authors                // columns = 'doi', 'family', 'given', 'orcid'
             #df8  -> VenueIDs              // columns = 'doi', 'issn_isbn'
