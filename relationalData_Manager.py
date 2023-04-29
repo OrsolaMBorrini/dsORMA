@@ -31,6 +31,8 @@ class RelationalDataProcessor(RelationalProcessor):
 
     def uploadData(self, filepath):
         # Step-1 : read the data into pandas
+        
+        # ---------- CSV 
         if filepath.endswith(".csv"):
             #df1 -> journal article         // columns = 'id', 'title', 'type', 'publication_year', 'issue', 'volume'
             #df2 -> book-chapter            // columns = 'id', 'title', 'type', 'publication_year', 'chapter'
@@ -39,6 +41,8 @@ class RelationalDataProcessor(RelationalProcessor):
             #df5 -> Venue_journal           // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             #df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event
             df1,df2,df3,df4,df5,df6 = readCSV(filepath)
+            
+        # ---------- JSON 
         elif filepath.endswith(".json"):
             #df7  -> authors                // columns = 'doi', 'family', 'given', 'orcid'
             #df8  -> VenueIDs              // columns = 'doi', 'issn_isbn'
