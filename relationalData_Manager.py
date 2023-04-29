@@ -40,7 +40,7 @@ class RelationalDataProcessor(RelationalProcessor):
             #df4 -> Venue_book              // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             #df5 -> Venue_journal           // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             #df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event
-            df1,df2,df3,df4,df5,df6 = readCSV(filepath)
+            df1, df2, df3, df4, df5, df6 = readCSV(filepath)
             
         # ---------- JSON 
         elif filepath.endswith(".json"):
@@ -48,7 +48,7 @@ class RelationalDataProcessor(RelationalProcessor):
             #df8  -> VenueIDs              // columns = 'doi', 'issn_isbn'
             #df9  -> citations             // columns = 'doi', 'cited_doi'
             #df10 -> publishers            // columns = 'crossref', 'publisher'
-            dataDF2 = readJSON(filepath)
+            df7, df8, df9, df10 = readJSON(filepath)
 
         # Step-2 : create tables from the above data
             # Avoid repetition
