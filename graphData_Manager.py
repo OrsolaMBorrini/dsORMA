@@ -6,7 +6,7 @@ import pandas as pd
 import json
 
 from ModelClasses import QueryProcessor
-from auxiliary import readCSV, readJSON
+from auxiliary import readCSV, readJSON ,dbupdater
 
 # Establishing class object URIs 
 JournalArticle = URIRef("https://schema.org/ScholarlyArticle")
@@ -38,6 +38,8 @@ name = URIRef("https://schema.org/givenName")
 surname = URIRef("https://schema.org/familyName")
 citation = URIRef("https://schema.org/citation")
 
+#my global variables
+df1,df2,df3,df4,df5,df6,df7,df8,df9,df10 = pd.DataFrame()
 
 class TriplestoreProcessor(object):
     def __init__(self):
@@ -64,6 +66,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
     def uploadData(self, filepath):
         # Step-1 : read the data into pandas
         if filepath.endswith(".csv"):
+            global df1,df2,df3,df4,df5,df6
             #df1 -> journal article         // columns = 'id', 'title', 'type', 'publication_year', 'issue', 'volume'
             #df2 -> book-chapter            // columns = 'id', 'title', 'type', 'publication_year', 'chapter'
             #df3 -> proceedings-paper       // columns = 'id', 'title', 'type', 'publication_year'
@@ -71,13 +74,23 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             #df5 -> Venue_journal           // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             #df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event
             df1,df2,df3,df4,df5,df6 = readCSV(filepath)
+
+            #REMEMBER TO CHANGE THE 'id' column to 'doi' to match the json column name
     
-        if filepath.endswith(".json"):
-            #df7  -> authors                // columns = 'doi', 'family', 'given', 'orcid'
-            #df8  -> VenueIDs              // columns = 'doi', 'issn_isbn'
-            #df9  -> citations             // columns = 'doi', 'cited_doi'
-            #df10 -> publishers            // columns = 'crossref', 'publisher'
+        elif filepath.endswith(".json"):
+            #df7  -> authors                // columns = 
+            #df8  -> citations              // columns = 
+            #df9  -> publishers             // columns = 
+            #df10 -> VenueIDs               // columns = 
             df7,df8,df9,df10 = readJSON(filepath)
+
+        triples = Graph()
+
+        base_url = "https://FF.github.io/res/"
+
+        #example
+        #subj = URIRef(base_url + local_id2)   #we have to make the subject a URI and only then can it be added to the triple
+        #triples.add((subj,familyName,Literal(value['family'])))
 
         # Step-2 : iterate over the data to create triples
             # Avoid repetition
@@ -89,6 +102,8 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             #2.6 : store triples for PP
 
         # Step-3 : open the connection to the DB and push the triples.
+
+        dbupdater(triples,self.endpointURL)
 
         return True
     
