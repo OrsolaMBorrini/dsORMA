@@ -1,12 +1,13 @@
 import pandas as pd
 from ModelClasses import *
+from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
+from sparql_dataframe import get
 
 def readJSON(path):
-    df_list = list()
+    return True
     
 
 def readCSV(path):
-    df_list = list()
     D0 = pd.read_csv(path,header=0)
 
     #store JA_df
@@ -42,6 +43,20 @@ def readCSV(path):
 
     return JA_df,BC_df,PP_df,VeB_df,VeJ_df,VePE_df
     
+def dbupdater(graphvariable,endpointURI):
+    store = SPARQLUpdateStore()
+    # The URL of the SPARQL endpoint is the same URL of the Blazegraph
+    # instance + '/sparql'
+    # It opens the connection with the SPARQL endpoint instance
+    #endpointURI = "http://127.0.0.1:9999/blazegraph/sparql"  
+    #endpointURI = endpointURI + '/sparql'
+    store.open((endpointURI,endpointURI))
+
+    for triple in graphvariable.triples((None, None, None)):
+        store.add(triple)
+            
+    # close connection 
+    store.close()
 
 def check_repetedDOI():
     return True
