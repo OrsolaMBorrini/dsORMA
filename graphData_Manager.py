@@ -73,10 +73,10 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             df1,df2,df3,df4,df5,df6 = readCSV(filepath)
     
         if filepath.endswith(".json"):
-            #df7  -> authors                // columns = 
-            #df8  -> citations              // columns = 
-            #df9  -> publishers             // columns = 
-            #df10 -> VenueIDs               // columns = 
+            #df7  -> authors                // columns = 'doi', 'family', 'given', 'orcid'
+            #df8  -> VenueIDs              // columns = 'doi', 'issn_isbn'
+            #df9  -> citations             // columns = 'doi', 'cited_doi'
+            #df10 -> publishers            // columns = 'crossref', 'publisher'
             df7,df8,df9,df10 = readJSON(filepath)
 
         # Step-2 : iterate over the data to create triples
