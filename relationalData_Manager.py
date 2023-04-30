@@ -7,18 +7,18 @@ from auxiliary import readCSV, readJSON
 
 class RelationalProcessor(object):
     def __init__(self):
-        # 'db_path' is name we use for the database path 
-        self.db_path = ""
+        # 'dbPath' is name we use for the database path 
+        self.dbPath = ""
 
-    def getDbpath(self):
-        if self.db_path == "":
-            return "DbPath is currently unset" + self.db_path
+    def getDbPath(self):
+        if self.dbPath == "":
+            return "DbPath is currently unset" + self.dbPath
         else:
-            return self.db_path
+            return self.dbPath
         
-    def setDbpath(self, new_db_path):
-        if new_db_path is str:
-            self.db_path = new_db_path
+    def setDbPath(self, new_dbPath):
+        if isinstance(new_dbPath, str):
+            self.dbPath = new_dbPath
             return True
         else:
             return False
@@ -41,7 +41,19 @@ class RelationalDataProcessor(RelationalProcessor):
             #df5 -> Venue_journal           // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             #df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event
             df1, df2, df3, df4, df5, df6 = readCSV(filepath)
+
+            # ----- DATABASE CONNECTION
+            with sql3.connect(self.dbPath) as rdb:
+                df1.to_sql('JournalArticleTable', rdb, if_exists='replace', index=False)
+                df2.to_sql('BookChapterTable', rdb, if_exists='replace', index=False)
+                df3.to_sql('ProceedingsPaperTable', rdb, if_exists='replace', index=False)
+                df4.to_sql('BookTable', rdb, if_exists='replace', index=False)
+                df5.to_sql('JournalTable', rdb, if_exists='replace', index=False)
+                df6.to_sql('ProceedingsTable', rdb, if_exists='replace', index=False)
+
+                rdb.commit()
             
+    
         # ---------- JSON 
         elif filepath.endswith(".json"):
             #df7  -> authors                // columns = 'doi', 'family', 'given', 'orcid'
@@ -50,10 +62,14 @@ class RelationalDataProcessor(RelationalProcessor):
             #df10 -> publishers            // columns = 'crossref', 'publisher'
             df7, df8, df9, df10 = readJSON(filepath)
 
-        # Step-2 : create tables from the above data
-            # Avoid repetition
+            # ----- DATABASE CONNECTION
+            with sql3.connect(self.dbPath) as rdb:
+                df7.to_sql('AuthorsTable', rdb, if_exists='replace', index=False)
+                df8.to_sql('VenuesIDTable', rdb, if_exists='replace', index=False)
+                df9.to_sql('CitationsTable', rdb, if_exists='replace', index=False)
+                df10.to_sql('PublishersTable', rdb, if_exists='replace', index=False)
 
-        # Step-3 : open the connection to the DB and push the tables.
+                rdb.commit()
 
         return True
     
@@ -134,14 +150,14 @@ class RelationalQueryProcessor(QueryProcessor,RelationalProcessor):
 rel_path = "relational.db"
 rel_dp = RelationalDataProcessor()
 rel_dp.setDbPath(rel_path)
-rel_dp.uploadData("data/relational_publications.csv")
-rel_dp.uploadData("data/relational_other_data.json")
+rel_dp.uploadData("testData/relational_publications.csv")
+rel_dp.uploadData("testData/relational_other_data.json")
 
 # Checking the superclass is correct or not
-print(rel_dp.__bases__)
+# print(rel_dp.__bases__)
 
 rel_qp = RelationalQueryProcessor()
 rel_qp.setDbPath(rel_path)
 
 # Checking the superclass is correct or not
-print(rel_qp.__bases__)
+#print(rel_qp.__bases__)
