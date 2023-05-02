@@ -60,44 +60,38 @@ def readJSON(path):
 
     return authors_DF, venuesID_DF, references_DF, publishers_DF
 
-
+# !!!!! -------------------- CHANGE "id" columns to "doi" columns
 def readCSV(path):
     D0 = pd.read_csv(path, header=0)
 
     # store JA_df
     filtered_df = D0.query("type == 'journal-article'")
-    JA_df = filtered_df.drop(columns=['chapter',
-                                      'publication_venue', 'venue_type', 'publisher', 'event'])
+    JA_df = filtered_df.drop(columns=['chapter', 'publication_venue', 'venue_type', 'publisher', 'event'])
     # print(JA_df.columns)
 
     # store BC_df
     filtered_df = D0.query("type == 'book-chapter'")
-    BC_df = filtered_df.drop(columns=['issue', 'volume',
-                                      'publication_venue', 'venue_type', 'publisher', 'event'])
+    BC_df = filtered_df.drop(columns=['issue', 'volume', 'publication_venue', 'venue_type', 'publisher', 'event'])
     # print(BC_df.head(3))
     # print(BC_df.columns)
 
     # store PP_df
     filtered_df = D0.query("type == 'proceedings-paper'")
-    PP_df = filtered_df.drop(columns=[
-                             'issue', 'volume', 'chapter', 'publication_venue', 'venue_type', 'publisher', 'event'])
+    PP_df = filtered_df.drop(columns=['issue', 'volume', 'chapter', 'publication_venue', 'venue_type', 'publisher', 'event'])
     # print(PP_df.head(3))
     # print(PP_df.columns)
 
     # store VeB_DF
     filtered_df = D0.query("venue_type == 'book'")
-    VeB_df = filtered_df.drop(
-        columns=['title', 'type', 'publication_year', 'issue', 'volume', 'chapter', 'event'])
+    VeB_df = filtered_df.drop(columns=['title', 'type', 'publication_year', 'issue', 'volume', 'chapter', 'event'])
 
     # store VeJ_DF
     filtered_df = D0.query("venue_type == 'journal'")
-    VeJ_df = filtered_df.drop(
-        columns=['title', 'type', 'publication_year', 'issue', 'volume', 'chapter', 'event'])
+    VeJ_df = filtered_df.drop(columns=['title', 'type', 'publication_year', 'issue', 'volume', 'chapter', 'event'])
 
     # store VePE_DF
     filtered_df = D0.query("venue_type == 'proceedings'")
-    VePE_df = filtered_df.drop(
-        columns=['title', 'type', 'publication_year', 'issue', 'volume', 'chapter'])
+    VePE_df = filtered_df.drop(columns=['title', 'type', 'publication_year', 'issue', 'volume', 'chapter'])
 
     return JA_df, BC_df, PP_df, VeB_df, VeJ_df, VePE_df
 
