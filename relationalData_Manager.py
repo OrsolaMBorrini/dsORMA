@@ -123,22 +123,22 @@ class RelationalQueryProcessor(QueryProcessor,RelationalProcessor):
         print("don the things here")
         return QR_6
     
-    def getJournalArticlesInIssue(self, issue, volume, jo_id):
+    def getJournalArticlesInIssue(self, issue, volume, journalId):
         QR_7 = pd.DataFrame()
         print("don the things here")
         return QR_7
     
-    def getJournalArticlesInVolume(self, volume, jo_id):
+    def getJournalArticlesInVolume(self, volume, journalId):
         QR_8 = pd.DataFrame()
         print("don the things here")
         return QR_8
     
-    def getJournalArticlesInJournal(self, jo_id):
+    def getJournalArticlesInJournal(self, journalId):
         QR_9 = pd.DataFrame()
         print("don the things here")
         return QR_9
     
-    def getProceedingsByEvent(self, eventName):
+    def getProceedingsByEvent(self, eventPartialName):
         QR_10 = pd.DataFrame()
         print("don the things here")
         return QR_10
@@ -148,12 +148,12 @@ class RelationalQueryProcessor(QueryProcessor,RelationalProcessor):
         print("don the things here")
         return QR_11
     
-    def getPublicationsByAuthorName(self, authorName):
+    def getPublicationsByAuthorName(self, authorPartialName):
         QR_12 = pd.DataFrame()
         print("don the things here")
         return QR_12
     
-    def getDistinctPublisherOfPublications(self, doi_list):
+    def getDistinctPublisherOfPublications(self, doiList):
         QR_13 = pd.DataFrame()
         print("don the things here")
         return QR_13
