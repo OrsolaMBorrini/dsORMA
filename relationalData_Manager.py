@@ -102,7 +102,7 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
 
     # -- Queries
     def getPublicationsPublishedInYear(self, year):
-        if type(year) == int:
+        if isinstance(year,int):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
                 query = "SELECT id, type FROM JournalArticleTable WHERE publication_year='{year}' UNION SELECT id, type FROM BookChapterTable WHERE publication_year='{year}' UNION SELECT id, type FROM ProceedingsPaperTable WHERE publication_year='{year}'".format(year=year)
@@ -114,7 +114,7 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
             raise Exception("The input parameter is not an integer!")
     
     def getPublicationsByAuthorId(self, orcid):
-        if type(orcid) == str:
+        if isinstance(orcid,str):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
                 query = "SELECT id, type, orcid FROM JournalArticleTable LEFT JOIN AuthorsTable ON JournalArticleTable.id==AuthorsTable.doi WHERE orcid = '{orcid}' UNION SELECT id, type, orcid FROM BookChapterTable LEFT JOIN AuthorsTable ON BookChapterTable.id==AuthorsTable.doi WHERE orcid = '{orcid}' UNION SELECT id, type, orcid FROM ProceedingsPaperTable LEFT JOIN AuthorsTable ON ProceedingsPaperTable.id==AuthorsTable.doi WHERE orcid = '{orcid}'".format(orcid=orcid)
@@ -122,6 +122,8 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
                 result = cur.fetchall()
                 qrdb.commit()
             return pd.DataFrame(data=result,columns=["doi","type","orcid"])
+        else:
+            raise Exception("The input parameter is not a string!")
         
     def getMostCitedPublication(self):
         with sql3.connect(self.getDbPath()) as qrdb:
@@ -146,14 +148,28 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         return QR_4
 
     def getVenuesByPublisherId(self, crossref):
-        QR_5 = pd.DataFrame()
-        print("don the things here")
-        return QR_5
+        if isinstance(crossref, str):
+            with sql3.connect(self.getDbPath()) as qrdb:
+                cur = qrdb.cursor()
+                query = "SELECT issn_isbn, publication_venue, venue_type, publisher FROM JournalTable LEFT JOIN VenuesIDTable on JournalTable.id == VenuesIDTable.doi WHERE publisher = '{crossref}' UNION SELECT issn_isbn, publication_venue, venue_type, publisher FROM BookTable LEFT JOIN VenuesIDTable on BookTable.id == VenuesIDTable.doi WHERE publisher = '{crossref}' UNION SELECT issn_isbn, publication_venue, venue_type, publisher FROM ProceedingsTable LEFT JOIN VenuesIDTable on ProceedingsTable.id == VenuesIDTable.doi WHERE publisher = '{crossref}'".format(crossref=crossref)
+                cur.execute(query)
+                result = cur.fetchall()
+                qrdb.commit
+            return pd.DataFrame(data=result,columns=["issn_isbn","publication_venue","venue_type","publisher"])
+        else:
+            raise Exception("The input parameter is not a string!")
 
     def getPublicationInVenue(self, issn_isbn):
-        QR_6 = pd.DataFrame()
-        print("don the things here")
-        return QR_6
+        if isinstance(issn_isbn, str):
+            with sql3.connect(self.getDbPath()) as qrdb:
+                cur = qrdb.cursor()
+                query = "SELECT id, type FROM JournalArticleTable LEFT JOIN VenuesIDTable on JournalArticleTable.id == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}' UNION SELECT id, type FROM BookChapterTable LEFT JOIN VenuesIDTable on BookChapterTable.id == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}' UNION SELECT id, type FROM ProceedingsPaperTable LEFT JOIN VenuesIDTable on ProceedingsPaperTable.id == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}'".format(issn_isbn=issn_isbn)
+                cur.execute(query)
+                result = cur.fetchall()
+                qrdb.commit
+            return pd.DataFrame(data=result,columns=["doi","type"])
+        else:
+            raise Exception("The input parameter is not a string!")
 
     def getJournalArticlesInIssue(self, issue, volume, journalId):
         QR_7 = pd.DataFrame()
@@ -209,7 +225,9 @@ rel_qp.setDbPath(rel_path)
 q1 = rel_qp.getPublicationsPublishedInYear(2020)
 q2 = rel_qp.getPublicationsByAuthorId("0000-0003-0530-4305")
 q3 = rel_qp.getMostCitedPublication()
-print(q3)
+q5 = rel_qp.getVenuesByPublisherId("crossref:301")
+q6 = rel_qp.getPublicationInVenue("issn:2641-3337")
+print(q6)
 
 # Checking the superclass is correct or not
 # print(rel_qp.__bases__)

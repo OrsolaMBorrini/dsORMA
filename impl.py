@@ -2,10 +2,11 @@ import ModelClasses as mdc
 import pandas as pd
 
 # 1) Importing all the classes for handling the relational database
-from relationalData_Manager import RelationalDataProcessor, RelationalQueryProcessor, df1_r,df10_r
+from relationalData_Manager import RelationalDataProcessor, RelationalQueryProcessor, df1_r, df10_r
 
 # 2) Importing all the classes for handling RDF database
-from graphData_Manager import TriplestoreDataProcessor, TriplestoreQueryProcessor, df1_g,df10_g
+# from graphData_Manager import TriplestoreDataProcessor, TriplestoreQueryProcessor, df1_g, df10_g
+import graphData_Manager as gdp
 
 # 3) Importing the class for dealing with generic queries
 from GenericQueryP import GenericQueryProcessor
@@ -21,8 +22,8 @@ from GenericQueryP import GenericQueryProcessor
 # Then, create the RDF triplestore (remember first to run the
 # Blazegraph instance) using the related source data
 grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
-grp_dp = TriplestoreDataProcessor()
-grp_dp.setEndpointURL(grp_endpoint)
+grp_dp = gdp.TriplestoreDataProcessor()
+grp_dp.setEndpointUrl(grp_endpoint)
 grp_dp.uploadData("testData/graph_publications.csv")
 grp_dp.uploadData("testData/graph_other_data.json")
 
@@ -31,8 +32,8 @@ grp_dp.uploadData("testData/graph_other_data.json")
 #rel_qp = RelationalQueryProcessor()
 #rel_qp.setDbPath(rel_path)
 
-grp_qp = TriplestoreQueryProcessor()
-grp_qp.setEndpointURL(grp_endpoint)
+grp_qp = gdp.TriplestoreQueryProcessor()
+grp_qp.setEndpointUrl(grp_endpoint)
 
 # Finally, create a generic query processor for asking
 # about data
@@ -40,8 +41,8 @@ generic = GenericQueryProcessor()
 #generic.addQueryProcessor(rel_qp)
 generic.addQueryProcessor(grp_qp)
 
-#print(df1_r)
-#print(df10_r)
+print(df1_r.head())
+print(df10_r)
 
-print(df1_g)
-print(df10_g)
+print(gdp.df1_g)
+print(gdp.df10_g)

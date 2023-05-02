@@ -52,16 +52,16 @@ df10_g = pd.DataFrame()
 
 class TriplestoreProcessor(object):
     def __init__(self):
-        # 'db_path' is name we use for the database path 
-        self.endpointURL = ""
+        self.endpointUrl = ""
 
-    def getEndpointURL(self):
-        if self.endpointURL == "":
-            return "endpointURL is currently unset" + self.endpointURL
+    def getEndpointUrl(self):
+        if self.endpointUrl == "":
+            return "endpointUrl is currently unset" + self.endpointUrl
 
-    def setEndpointURL(self, new_endpointURL):
-        if new_endpointURL is str:
-            self.endpointURL = new_endpointURL
+    def setEndpointUrl(self, new_endpointUrl):
+        if isinstance(new_endpointUrl,str):
+        #if new_endpointUrl is str:
+            self.endpointUrl = new_endpointUrl
             return True
         else:
             return False
@@ -78,7 +78,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
         
         # ---------- CSV 
         if filepath.endswith(".csv"):
-            print("entered csvs")
+            #print("entered csvs")
             #df1 -> journal article         // columns = 'id', 'title', 'type', 'publication_year', 'issue', 'volume'
             #df2 -> book-chapter            // columns = 'id', 'title', 'type', 'publication_year', 'chapter'
             #df3 -> proceedings-paper       // columns = 'id', 'title', 'type', 'publication_year'
@@ -86,7 +86,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             #df5 -> Venue_journal           // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             #df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event
             df1_g, df2_g, df3_g, df4_g, df5_g, df6_g = readCSV(filepath)
-            print("df1_g in the csv branch", df1_g)
+            #print("df1_g in the csv branch", df1_g)
 
             #REMEMBER TO CHANGE THE 'id' column to 'doi' to match the json column name
             
@@ -117,9 +117,9 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
 
         # Step-3 : open the connection to the DB and push the triples.
 
-        dbupdater(triples,self.endpointURL)
+        dbupdater(triples,self.endpointUrl)
 
-        return True, print("df1_g outsde", df1_g)
+        return True
 
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
@@ -195,19 +195,19 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 # TEST AREA
-'''
+""" 
 grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
 grp_dp = TriplestoreDataProcessor()
 grp_dp.setEndpointUrl(grp_endpoint)
-grp_dp.uploadData("data/graph_publications.csv")
-grp_dp.uploadData("data/graph_other_data.json")
+grp_dp.uploadData("testData/graph_publications.csv")
+grp_dp.uploadData("testData/graph_other_data.json")
 
 # Checking the superclass is correct or not
-print(grp_dp.__bases__)
+# print(grp_dp.__bases__)
 
 grp_qp = TriplestoreQueryProcessor()
 grp_qp.setEndpointUrl(grp_endpoint)
 
+
 # Checking the superclass is correct or not
-print(grp_qp.__bases__)
-'''
+# print(grp_qp.__bases__) """
