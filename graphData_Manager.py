@@ -74,10 +74,10 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
 
     def uploadData(self, filepath):
         # Step-1 : read the data into pandas
+        global df1_g, df2_g, df3_g, df4_g, df5_g, df6_g, df7_g, df8_g, df9_g, df10_g
         
         # ---------- CSV 
         if filepath.endswith(".csv"):
-            global df1_g, df2_g, df3_g, df4_g, df5_g, df6_g
             #df1 -> journal article         // columns = 'id', 'title', 'type', 'publication_year', 'issue', 'volume'
             #df2 -> book-chapter            // columns = 'id', 'title', 'type', 'publication_year', 'chapter'
             #df3 -> proceedings-paper       // columns = 'id', 'title', 'type', 'publication_year'
