@@ -193,6 +193,7 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 # TEST AREA
+'''
 grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
 grp_dp = TriplestoreDataProcessor()
 grp_dp.setEndpointUrl(grp_endpoint)
@@ -207,3 +208,4 @@ grp_qp.setEndpointUrl(grp_endpoint)
 
 # Checking the superclass is correct or not
 print(grp_qp.__bases__)
+'''
