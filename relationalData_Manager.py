@@ -105,7 +105,7 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         if type(year) == int:
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
-                query = "SELECT id FROM JournalArticleTable WHERE publication_year='{year}' UNION SELECT id FROM BookChapterTable WHERE publication_year='{year}' UNION SELECT id FROM ProceedingsPaperTable WHERE publication_year='{year}'".format(year=year)
+                query = "SELECT id, type FROM JournalArticleTable WHERE publication_year='{year}' UNION SELECT id, type FROM BookChapterTable WHERE publication_year='{year}' UNION SELECT id, type FROM ProceedingsPaperTable WHERE publication_year='{year}'".format(year=year)
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit()
