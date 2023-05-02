@@ -38,8 +38,17 @@ name = URIRef("https://schema.org/givenName")
 surname = URIRef("https://schema.org/familyName")
 citation = URIRef("https://schema.org/citation")
 
-#my global variables
-df1,df2,df3,df4,df5,df6,df7,df8,df9,df10 = pd.DataFrame()
+# Global variables
+df1_g = pd.DataFrame()
+df2_g = pd.DataFrame()
+df3_g = pd.DataFrame()
+df4_g = pd.DataFrame()
+df5_g = pd.DataFrame()
+df6_g = pd.DataFrame()
+df7_g = pd.DataFrame()
+df8_g = pd.DataFrame()
+df9_g = pd.DataFrame()
+df10_g = pd.DataFrame()
 
 class TriplestoreProcessor(object):
     def __init__(self):
@@ -68,14 +77,14 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
         
         # ---------- CSV 
         if filepath.endswith(".csv"):
-            global df1,df2,df3,df4,df5,df6
+            global df1_g, df2_g, df3_g, df4_g, df5_g, df6_g
             #df1 -> journal article         // columns = 'id', 'title', 'type', 'publication_year', 'issue', 'volume'
             #df2 -> book-chapter            // columns = 'id', 'title', 'type', 'publication_year', 'chapter'
             #df3 -> proceedings-paper       // columns = 'id', 'title', 'type', 'publication_year'
             #df4 -> Venue_book              // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             #df5 -> Venue_journal           // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             #df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event
-            df1,df2,df3,df4,df5,df6 = readCSV(filepath)
+            df1_g, df2_g, df3_g, df4_g, df5_g, df6_g = readCSV(filepath)
 
             #REMEMBER TO CHANGE THE 'id' column to 'doi' to match the json column name
             
@@ -85,7 +94,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             #df8  -> VenueIDs              // columns = 'doi', 'issn_isbn'
             #df9  -> citations             // columns = 'doi', 'cited_doi'
             #df10 -> publishers            // columns = 'crossref', 'publisher'
-            df7,df8,df9,df10 = readJSON(filepath)
+            df7_g, df8_g, df9_g, df10_g = readJSON(filepath)
 
         triples = Graph()
 

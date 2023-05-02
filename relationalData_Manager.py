@@ -7,16 +7,16 @@ from auxiliary import readCSV, readJSON
 
 
 # Global variables
-df1 = pd.DataFrame()
-df2 = pd.DataFrame()
-df3 = pd.DataFrame()
-df4 = pd.DataFrame()
-df5 = pd.DataFrame()
-df6 = pd.DataFrame()
-df7 = pd.DataFrame()
-df8 = pd.DataFrame()
-df9 = pd.DataFrame()
-df10 = pd.DataFrame()
+df1_r = pd.DataFrame()
+df2_r = pd.DataFrame()
+df3_r = pd.DataFrame()
+df4_r = pd.DataFrame()
+df5_r = pd.DataFrame()
+df6_r = pd.DataFrame()
+df7_r = pd.DataFrame()
+df8_r = pd.DataFrame()
+df9_r = pd.DataFrame()
+df10_r = pd.DataFrame()
 
 
 class RelationalProcessor(object):
@@ -50,7 +50,7 @@ class RelationalDataProcessor(RelationalProcessor):
     # -- Methods
     def uploadData(self, filepath):
         # Step-1 : read the data into pandas
-        global df1, df2, df3, df4, df5, df6, df7, df8, df9, df10
+        global df1_r, df2_r, df3_r, df4_r, df5_r, df6_r, df7_r, df8_r, df9_r, df10_r
 
         # ---------- CSV
         if filepath.endswith(".csv"):
@@ -60,16 +60,16 @@ class RelationalDataProcessor(RelationalProcessor):
             # df4 -> Venue_book              // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             # df5 -> Venue_journal           // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             # df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event
-            df1, df2, df3, df4, df5, df6 = readCSV(filepath)
+            df1_r, df2_r, df3_r, df4_r, df5_r, df6_r = readCSV(filepath)
 
             # ----- DATABASE CONNECTION
             with sql3.connect(self.dbPath) as rdb:
-                df1.to_sql('JournalArticleTable', rdb, if_exists='replace', index=False)
-                df2.to_sql('BookChapterTable', rdb, if_exists='replace', index=False)
-                df3.to_sql('ProceedingsPaperTable', rdb, if_exists='replace', index=False)
-                df4.to_sql('BookTable', rdb, if_exists='replace', index=False)
-                df5.to_sql('JournalTable', rdb, if_exists='replace', index=False)
-                df6.to_sql('ProceedingsTable', rdb, if_exists='replace', index=False)
+                df1_r.to_sql('JournalArticleTable', rdb, if_exists='replace', index=False)
+                df2_r.to_sql('BookChapterTable', rdb, if_exists='replace', index=False)
+                df3_r.to_sql('ProceedingsPaperTable', rdb, if_exists='replace', index=False)
+                df4_r.to_sql('BookTable', rdb, if_exists='replace', index=False)
+                df5_r.to_sql('JournalTable', rdb, if_exists='replace', index=False)
+                df6_r.to_sql('ProceedingsTable', rdb, if_exists='replace', index=False)
 
                 rdb.commit()
 
@@ -79,14 +79,14 @@ class RelationalDataProcessor(RelationalProcessor):
             # df8  -> VenueIDs              // columns = 'doi', 'issn_isbn'
             # df9  -> citations             // columns = 'doi', 'cited_doi'
             # df10 -> publishers            // columns = 'crossref', 'publisher'
-            df7, df8, df9, df10 = readJSON(filepath)
+            df7_r, df8_r, df9_r, df10_r = readJSON(filepath)
 
             # ----- DATABASE CONNECTION
             with sql3.connect(self.dbPath) as rdb:
-                df7.to_sql('AuthorsTable', rdb, if_exists='replace', index=False)
-                df8.to_sql('VenuesIDTable', rdb, if_exists='replace', index=False)
-                df9.to_sql('CitationsTable', rdb, if_exists='replace', index=False)
-                df10.to_sql('PublishersTable', rdb, if_exists='replace', index=False)
+                df7_r.to_sql('AuthorsTable', rdb, if_exists='replace', index=False)
+                df8_r.to_sql('VenuesIDTable', rdb, if_exists='replace', index=False)
+                df9_r.to_sql('CitationsTable', rdb, if_exists='replace', index=False)
+                df10_r.to_sql('PublishersTable', rdb, if_exists='replace', index=False)
 
                 rdb.commit()
 
