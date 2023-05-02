@@ -59,7 +59,7 @@ class RelationalDataProcessor(RelationalProcessor):
             # df3 -> proceedings-paper       // columns = 'id', 'title', 'type', 'publication_year'
             # df4 -> Venue_book              // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             # df5 -> Venue_journal           // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
-            # df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event
+            # df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event'
             df1_r, df2_r, df3_r, df4_r, df5_r, df6_r = readCSV(filepath)
 
             # ----- DATABASE CONNECTION
@@ -172,40 +172,94 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
             raise Exception("The input parameter is not a string!")
 
     def getJournalArticlesInIssue(self, issue, volume, journalId):
-        QR_7 = pd.DataFrame()
-        print("don the things here")
-        return QR_7
+        if isinstance(issue,str) and isinstance(volume,str) and isinstance(journalId,str):
+            with sql3.connect(self.getDbPath()) as qrdb:
+                cur = qrdb.cursor()
+                query = "SELECT id, type, issue, volume, issn_isbn FROM JournalArticleTable LEFT JOIN VenuesIDTable ON JournalArticleTable.id == VenuesIDTable.doi WHERE issue = '{issue}' AND volume = '{volume}' AND issn_isbn = '{issn_isbn}'".format(issue=issue, volume=volume, issn_isbn=journalId)
+                cur.execute(query)
+                result = cur.fetchall()
+                qrdb.commit
+            return pd.DataFrame(data=result,columns=["doi","type","issue","volume","issn_isbn"])
+        else:
+            raise Exception("All or some of the input parameters are not strings!")
 
     def getJournalArticlesInVolume(self, volume, journalId):
-        QR_8 = pd.DataFrame()
-        print("don the things here")
-        return QR_8
+        if isinstance(volume,str) and isinstance(journalId,str):
+            with sql3.connect(self.getDbPath()) as qrdb:
+                cur = qrdb.cursor()
+                query = "SELECT id, type, issue, volume, issn_isbn FROM JournalArticleTable LEFT JOIN VenuesIDTable ON JournalArticleTable.id == VenuesIDTable.doi WHERE volume = '{volume}' AND issn_isbn = '{issn_isbn}'".format(volume=volume, issn_isbn=journalId)
+                cur.execute(query)
+                result = cur.fetchall()
+                qrdb.commit
+            return pd.DataFrame(data=result,columns=["doi","type","issue","volume","issn_isbn"])
+        else:
+            raise Exception("All or some of the input parameters are not strings!")
 
     def getJournalArticlesInJournal(self, journalId):
-        QR_9 = pd.DataFrame()
-        print("don the things here")
-        return QR_9
+        if isinstance(journalId,str):
+            with sql3.connect(self.getDbPath()) as qrdb:
+                cur = qrdb.cursor()
+                query = "SELECT id, type, issue, volume, issn_isbn FROM JournalArticleTable LEFT JOIN VenuesIDTable ON JournalArticleTable.id == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}'".format(issn_isbn=journalId)
+                cur.execute(query)
+                result = cur.fetchall()
+                qrdb.commit
+            return pd.DataFrame(data=result,columns=["doi","type","issue","volume","issn_isbn"])
+        else:
+            raise Exception("The input parameter is not a string!")
 
     def getProceedingsByEvent(self, eventPartialName):
-        QR_10 = pd.DataFrame()
-        print("don the things here")
-        return QR_10
+        if isinstance(eventPartialName,str):
+            with sql3.connect(self.getDbPath()) as qrdb:
+                cur = qrdb.cursor()
+                query = "SELECT publication_venue, issn_isbn, event FROM ProceedingsTable LEFT JOIN VenuesIDTable ON ProceedingsTable.id == VenuesIDTable.doi WHERE event LIKE '%{event}%'".format(event=eventPartialName)
+                cur.execute(query)
+                result = cur.fetchall()
+                qrdb.commit
+            return pd.DataFrame(data=result,columns=["publication_venue","issn_isbn","event"])
+        else:
+            raise Exception("The input parameter is not a string!")
 
     def getPublicationAuthors(self, doi):
-        QR_11 = pd.DataFrame()
-        print("don the things here")
-        return QR_11
+        if isinstance(doi,str):
+            with sql3.connect(self.getDbPath()) as qrdb:
+                cur = qrdb.cursor()
+                query = "SELECT doi, family, given, orcid FROM AuthorsTable WHERE doi='{doi}'".format(doi=doi)
+                cur.execute(query)
+                result = cur.fetchall()
+                qrdb.commit
+            return pd.DataFrame(data=result,columns=["doi","family","given","orcid"])
+        else:
+            raise Exception("The input parameter is not a string!")
 
     def getPublicationsByAuthorName(self, authorPartialName):
-        QR_12 = pd.DataFrame()
-        print("don the things here")
-        return QR_12
+        if isinstance(authorPartialName,str):
+            with sql3.connect(self.getDbPath()) as qrdb:
+                cur = qrdb.cursor()
+                query = "SELECT doi, type, issue, volume, NULL AS chapter, NULL AS event FROM JournalArticleTable LEFT JOIN AuthorsTable ON JournalArticleTable.id == AuthorsTable.doi WHERE family LIKE '%{family}%' OR given LIKE '%{given}%' UNION SELECT doi, type, NULL AS issue, NULL AS volume, chapter, NULL AS event FROM BookChapterTable LEFT JOIN AuthorsTable ON BookChapterTable.id == AuthorsTable.doi WHERE family LIKE '%{family}%' OR given LIKE '%{given}%' UNION SELECT doi, type, NULL AS issue, NULL AS volume, NULL AS chapter, NULL AS event FROM ProceedingsPaperTable LEFT JOIN AuthorsTable ON ProceedingsPaperTable.id == AuthorsTable.doi WHERE family LIKE '%{family}%' OR given LIKE '%{given}%'".format(family=authorPartialName,given=authorPartialName)
+                cur.execute(query)
+                result = cur.fetchall()
+                qrdb.commit
+            return pd.DataFrame(data=result,columns=["doi","type","issue","volume","chapter","event"])
+        else:
+            raise Exception("The input parameter is not a string!")
 
+    # TEST THIS LAST QUERY !
     def getDistinctPublisherOfPublications(self, doiList):
-        QR_13 = pd.DataFrame()
-        print("don the things here")
-        return QR_13
+        if isinstance(doiList,list) and all(isinstance(n, str) for n in doiList):
+            with sql3.connect(self.getDbPath()) as qrdb:
+                cur = qrdb.cursor()
+                result = list()
+                for item in doiList:
+                    query = "SELECT publisher, crossref FROM JournalTable LEFT JOIN PublishersTable ON JournalTable.publisher == PublishersTable.crossref WHERE id = '{doi}' UNION SELECT publisher, crossref FROM BookTable LEFT JOIN PublishersTable ON BookTable.publisher==PublishersTable.crossref WHERE id = '{doi}' UNION SELECT publisher, crossref FROM ProceedingsTable LEFT JOIN PublishersTable ON ProceedingsTable.publisher==PublishersTable.crossref WHERE id = '{doi}'".format(doi = item)
+                    cur.execute(query)
+                    result_q = cur.fetchall()
+                    result.extend(result_q)
+                qrdb.commit()
+            return pd.DataFrame(data=result,columns=["publisher","crossref"])
+        else:
+            raise Exception("The input parameter is not a list or it is not a list of strings!")
 
+        
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 
@@ -213,8 +267,8 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
 rel_path = "relational.db"
 rel_dp = RelationalDataProcessor()
 rel_dp.setDbPath(rel_path)
-rel_dp.uploadData("testData/relational_publications.csv")
-rel_dp.uploadData("testData/relational_other_data.json")
+rel_dp.uploadData("testData/new_relational_publications.csv")
+rel_dp.uploadData("testData/new_relational_other_data.json")
 
 # Checking the superclass is correct or not
 # print(rel_dp.__bases__)
@@ -225,9 +279,18 @@ rel_qp.setDbPath(rel_path)
 q1 = rel_qp.getPublicationsPublishedInYear(2020)
 q2 = rel_qp.getPublicationsByAuthorId("0000-0003-0530-4305")
 q3 = rel_qp.getMostCitedPublication()
+#q4 = rel_qp.getMostCitedVenue()
 q5 = rel_qp.getVenuesByPublisherId("crossref:301")
 q6 = rel_qp.getPublicationInVenue("issn:2641-3337")
-print(q6)
+q7 = rel_qp.getJournalArticlesInIssue("10","126","issn:0138-9130")
+q8 = rel_qp.getJournalArticlesInVolume("126","issn:0138-9130")
+q9 = rel_qp.getJournalArticlesInJournal("issn:0138-9130")
+q10 = rel_qp.getProceedingsByEvent("arz")
+q11 = rel_qp.getPublicationAuthors("doi:10.1007/s11192-021-04097-5")
+q12 = rel_qp.getPublicationsByAuthorName("Per")
+# TEST THIS QUERY q13 = rel_qp.getDistinctPublisherOfPublications(["doi:10.1007/978-3-030-61244-3_16","doi:10.1371/journal.pbio.3000385","doi:10.1007/s11192-018-2796-5"])
+
+#print(q13)
 
 # Checking the superclass is correct or not
 # print(rel_qp.__bases__)
