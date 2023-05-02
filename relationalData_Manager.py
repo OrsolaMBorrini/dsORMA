@@ -112,16 +112,33 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
             return pd.DataFrame(data=result,columns=["doi","pub_type"])
         else:
             raise Exception("The input parameter is not an integer!")
-
+    
     def getPublicationsByAuthorId(self, orcid):
-        QR_2 = pd.DataFrame()
-        print("don the things here")
-        return QR_2
-
+        if type(orcid) == str:
+            with sql3.connect(self.getDbPath()) as qrdb:
+                cur = qrdb.cursor()
+                query = "SELECT id, type, orcid FROM JournalArticleTable LEFT JOIN AuthorsTable ON JournalArticleTable.id==AuthorsTable.doi WHERE orcid = '{orcid}' UNION SELECT id, type, orcid FROM BookChapterTable LEFT JOIN AuthorsTable ON BookChapterTable.id==AuthorsTable.doi WHERE orcid = '{orcid}' UNION SELECT id, type, orcid FROM ProceedingsPaperTable LEFT JOIN AuthorsTable ON ProceedingsPaperTable.id==AuthorsTable.doi WHERE orcid = '{orcid}'".format(orcid=orcid)
+                cur.execute(query)
+                result = cur.fetchall()
+                qrdb.commit()
+            return pd.DataFrame(data=result,columns=["doi","type","orcid"])
+        
     def getMostCitedPublication(self):
-        QR_3 = pd.DataFrame()
-        print("don the things here")
-        return QR_3
+        with sql3.connect(self.getDbPath()) as qrdb:
+            cur = qrdb.cursor()
+            query1 = "SELECT cited_doi, COUNT(cited_doi) AS num_citations FROM CitationsTable GROUP BY cited_doi ORDER BY num_citations DESC"
+            cur.execute(query1)
+            result_q1 = cur.fetchall()
+            max = result_q1[0][1]
+            result1 = list()
+            for item in result_q1:
+                index = result_q1.index(item)
+                if result_q1[index][1] == max:
+                    tpl = tuple((result_q1[index][0],max))
+                    result1.append(tpl)
+            df1 = pd.DataFrame(data=result1,columns=["ref_doi","num_citations"])
+            qrdb.commit()
+        return df1
 
     def getMostCitedVenue(self):
         QR_4 = pd.DataFrame()
@@ -190,6 +207,9 @@ rel_qp = RelationalQueryProcessor()
 rel_qp.setDbPath(rel_path)
 
 q1 = rel_qp.getPublicationsPublishedInYear(2020)
+q2 = rel_qp.getPublicationsByAuthorId("0000-0003-0530-4305")
+q3 = rel_qp.getMostCitedPublication()
+print(q3)
 
 # Checking the superclass is correct or not
 # print(rel_qp.__bases__)
