@@ -78,6 +78,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
         
         # ---------- CSV 
         if filepath.endswith(".csv"):
+            print("entered csvs")
             #df1 -> journal article         // columns = 'id', 'title', 'type', 'publication_year', 'issue', 'volume'
             #df2 -> book-chapter            // columns = 'id', 'title', 'type', 'publication_year', 'chapter'
             #df3 -> proceedings-paper       // columns = 'id', 'title', 'type', 'publication_year'
@@ -85,6 +86,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             #df5 -> Venue_journal           // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
             #df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event
             df1_g, df2_g, df3_g, df4_g, df5_g, df6_g = readCSV(filepath)
+            print("df1_g in the csv branch", df1_g)
 
             #REMEMBER TO CHANGE THE 'id' column to 'doi' to match the json column name
             
@@ -117,8 +119,8 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
 
         dbupdater(triples,self.endpointURL)
 
-        return True
-    
+        return True, print("df1_g outsde", df1_g)
+
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
