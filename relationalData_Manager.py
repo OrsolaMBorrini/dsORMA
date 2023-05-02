@@ -5,6 +5,19 @@ import json
 from ModelClasses import QueryProcessor
 from auxiliary import readCSV, readJSON
 
+
+# Global variables
+df1 = pd.DataFrame()
+df2 = pd.DataFrame()
+df3 = pd.DataFrame()
+df4 = pd.DataFrame()
+df5 = pd.DataFrame()
+df6 = pd.DataFrame()
+df7 = pd.DataFrame()
+df8 = pd.DataFrame()
+df9 = pd.DataFrame()
+df10 = pd.DataFrame()
+
 class RelationalProcessor(object):
     def __init__(self):
         # 'dbPath' is name we use for the database path 
@@ -31,6 +44,7 @@ class RelationalDataProcessor(RelationalProcessor):
 
     def uploadData(self, filepath):
         # Step-1 : read the data into pandas
+        global df1, df2, df3, df4, df5, df6, df7, df8, df9, df10
         
         # ---------- CSV 
         if filepath.endswith(".csv"):
