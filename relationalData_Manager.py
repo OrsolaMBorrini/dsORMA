@@ -109,7 +109,7 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit()
-            return pd.DataFrame(data=result,columns=["doi"])
+            return pd.DataFrame(data=result,columns=["doi","pub_type"])
         else:
             raise Exception("The input parameter is not an integer!")
 
