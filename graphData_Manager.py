@@ -78,6 +78,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
         global df1_g, df2_g, df3_g, df4_g, df5_g, df6_g, df7_g, df8_g, df9_g, df10_g
         # Step-1 : read the data into pandas
         
+        base_url = "https://FF.github.io/res/"
         
         # ---------- CSV 
         if filepath.endswith(".csv"):
@@ -89,9 +90,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             #df5 -> Venue_journal           // columns = 'id_doi', 'publication_venue', 'venue_type', 'crossref'
             #df6 -> Venue_proceedings-event // columns = 'id_doi', 'publication_venue', 'venue_type', 'crossref', 'event
             df1_g, df2_g, df3_g, df4_g, df5_g, df6_g = readCSV(filepath)
-            #print("df1_g in the csv branch", df1_g)
 
-            #REMEMBER TO CHANGE THE 'id' column to 'doi' to match the json column name
             
         # ---------- JSON 
         elif filepath.endswith(".json"):
@@ -103,7 +102,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
 
         triples = Graph()
 
-        base_url = "https://FF.github.io/res/"
+        
 
         #example
         #subj = URIRef(base_url + local_id2)   #we have to make the subject a URI and only then can it be added to the triple
