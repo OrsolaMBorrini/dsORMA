@@ -21,6 +21,8 @@ df9_g = pd.DataFrame()
 df10_g = pd.DataFrame()
 
 # Establishing class object URIs 
+Publication = URIRef("http://purl.org/spar/fabio/Expression")
+
 JournalArticle = URIRef("https://schema.org/ScholarlyArticle")
 BookChapter = URIRef("https://schema.org/Chapter")
 ProceedingsPaper = URIRef("http://purl.org/spar/fabio/ProceedingsPaper")
@@ -50,7 +52,10 @@ name = URIRef("https://schema.org/givenName")
 surname = URIRef("https://schema.org/familyName")
 citation = URIRef("https://schema.org/citation")
 
-
+pubURIs = dict()
+venueURIs = dict()
+authorURIs = dict()
+publisherURIs = dict()
 
 class TriplestoreProcessor(object):
     def __init__(self):
@@ -86,26 +91,86 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             # df1_g -> journal article         // columns = 'id_doi', 'title', 'type', 'publication_year', 'issue', 'volume'
             # df2_g -> book-chapter            // columns = 'id_doi', 'title', 'type', 'publication_year', 'chapter'
             # df3 -> proceedings-paper       // columns = 'id_doi', 'title', 'type', 'publication_year'
-            # df4 -> Venue_book              // columns = 'id_doi', 'publication_venue', 'venue_type', 'crossref'
-            # df5 -> Venue_journal           // columns = 'id_doi', 'publication_venue', 'venue_type', 'crossref'
-            # df6 -> Venue_proceedings-event // columns = 'id_doi', 'publication_venue', 'venue_type', 'crossref', 'event
+            # df4 -> Venue_book              // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref'
+            # df5 -> Venue_journal           // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref'
+            # df6 -> Venue_proceedings-event // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref', 'event
             df1_g, df2_g, df3_g, df4_g, df5_g, df6_g = readCSV(filepath)
-
-            # making JA triples
-            for i in range(len(df1_g)):
-                
-                    localID = "publication-" + str(df1_g.loc[i, "id_doi"])
-                    subj = URIRef(base_url+localID)
-                    print(subj)
-            # making BC triples
-
-            # making PP triples
-
-            # making VeB triples
+            triples = Graph()
 
             # making VeJ triples
 
-            # makin VePE triples
+            # making VeB triples
+
+            # making VePE triples
+
+            # making JA triples
+            for index, row in df1_g.iterrows():
+
+                localID = "publication-" +str(row["id_doi"])
+                subj = URIRef(base_url+localID)
+
+                if row["id_doi"] in pubURIs:
+                    pass
+                else: 
+                    triples.add((subj,RDF.type,Publication))                                    # add rdf type
+                    triples.add((subj,RDF.type,JournalArticle))                                 # add subclass type
+                    triples.add((subj,id,Literal(row["id_doi"])))                               # add id_doi
+                    triples.add((subj,title,Literal(row["title"])))                             # add title
+                    triples.add((subj,publicationYear,Literal(row["publication_year"])))        # add publication year
+                    triples.add((subj,issue,Literal(row["issue"])))                             # add issue number
+                    triples.add((subj,volume,Literal(row["volume"])))                           # add issue number
+
+                    #adding the relation to the venue
+                    
+
+                    # add the URI to the URI dict
+                    pubURIs.update({row["id_doi"]:subj})
+
+            # making BC triples
+            for index, row in df2_g.iterrows():
+
+                localID = "publication-" +str(row["id_doi"])
+                subj = URIRef(base_url+localID)
+
+                if row["id_doi"] in pubURIs:
+                    pass
+                else: 
+                    triples.add((subj,RDF.type,Publication))                                    # add rdf type
+                    triples.add((subj,RDF.type,BookChapter))                                    # add subclass type
+                    triples.add((subj,id,Literal(row["id_doi"])))                               # add id_doi
+                    triples.add((subj,title,Literal(row["title"])))                             # add title
+                    triples.add((subj,publicationYear,Literal(row["publication_year"])))        # add publication year
+                    triples.add((subj,BookChapter,Literal(row["chapter"])))                     # add chapter
+
+
+                    #adding the relation to the venue
+                    
+
+                    # add the URI to the URI dict
+                    pubURIs.update({row["id_doi"]:subj})
+                    
+            # making PP triples
+            for index, row in df3_g.iterrows():
+
+                localID = "publication-" +str(row["id_doi"])
+                subj = URIRef(base_url+localID)
+
+                if row["id_doi"] in pubURIs:
+                    pass
+                else: 
+                    triples.add((subj,RDF.type,Publication))                                    # add rdf type
+                    triples.add((subj,RDF.type,ProceedingsPaper))                               # add subclass type
+                    triples.add((subj,id,Literal(row["id_doi"])))                               # add id_doi
+                    triples.add((subj,title,Literal(row["title"])))                             # add title
+                    triples.add((subj,publicationYear,Literal(row["publication_year"])))        # add publication year
+
+
+                    #adding the relation to the venue
+                    
+
+                    # add the URI to the URI dict
+                    pubURIs.update({row["id_doi"]:subj})
+
 
             
         # ---------- JSON 
@@ -116,7 +181,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             #df10 -> publishers            // columns = 'crossref', 'publisher'
             df7_g, df8_g, df9_g, df10_g = readJSON(filepath)
 
-        triples = Graph()
+        
 
         
 
