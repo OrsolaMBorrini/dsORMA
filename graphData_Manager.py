@@ -84,7 +84,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
         # Step-1 : read the data into pandas
         
         base_url = "https://FF.github.io/res/"
-        
+        triples = Graph()
         # ---------- CSV 
         if filepath.endswith(".csv"):
         
@@ -95,7 +95,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             # df5 -> Venue_journal           // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref'
             # df6 -> Venue_proceedings-event // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref', 'event
             df1_g, df2_g, df3_g, df4_g, df5_g, df6_g = readCSV(filepath)
-            triples = Graph()
+            
 
             # making VeJ triples
 
@@ -183,6 +183,12 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
 
         
 
+        if df10_g.empty is False and df1_g.empty is False:
+            print("JSON + CSV is uploaded")
+            
+        else:
+            pass
+            
         
 
         #example
