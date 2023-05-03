@@ -8,6 +8,18 @@ import json
 from ModelClasses import QueryProcessor
 from auxiliary import readCSV, readJSON ,dbupdater
 
+# Global variables
+df1_g = pd.DataFrame()
+df2_g = pd.DataFrame()
+df3_g = pd.DataFrame()
+df4_g = pd.DataFrame()
+df5_g = pd.DataFrame()
+df6_g = pd.DataFrame()
+df7_g = pd.DataFrame()
+df8_g = pd.DataFrame()
+df9_g = pd.DataFrame()
+df10_g = pd.DataFrame()
+
 # Establishing class object URIs 
 JournalArticle = URIRef("https://schema.org/ScholarlyArticle")
 BookChapter = URIRef("https://schema.org/Chapter")
@@ -38,17 +50,7 @@ name = URIRef("https://schema.org/givenName")
 surname = URIRef("https://schema.org/familyName")
 citation = URIRef("https://schema.org/citation")
 
-# Global variables
-df1_g = pd.DataFrame()
-df2_g = pd.DataFrame()
-df3_g = pd.DataFrame()
-df4_g = pd.DataFrame()
-df5_g = pd.DataFrame()
-df6_g = pd.DataFrame()
-df7_g = pd.DataFrame()
-df8_g = pd.DataFrame()
-df9_g = pd.DataFrame()
-df10_g = pd.DataFrame()
+
 
 class TriplestoreProcessor(object):
     def __init__(self):
@@ -71,10 +73,11 @@ class TriplestoreProcessor(object):
 class TriplestoreDataProcessor(TriplestoreProcessor):
     def __init__(self):
         super().__init__()
-
+    
     def uploadData(self, filepath):
-        # Step-1 : read the data into pandas
         global df1_g, df2_g, df3_g, df4_g, df5_g, df6_g, df7_g, df8_g, df9_g, df10_g
+        # Step-1 : read the data into pandas
+        
         
         # ---------- CSV 
         if filepath.endswith(".csv"):
@@ -195,7 +198,7 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 # TEST AREA
-""" 
+
 grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
 grp_dp = TriplestoreDataProcessor()
 grp_dp.setEndpointUrl(grp_endpoint)
@@ -209,5 +212,5 @@ grp_qp = TriplestoreQueryProcessor()
 grp_qp.setEndpointUrl(grp_endpoint)
 
 
-# Checking the superclass is correct or not
-# print(grp_qp.__bases__) """
+
+#
