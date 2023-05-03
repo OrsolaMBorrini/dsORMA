@@ -54,12 +54,12 @@ class RelationalDataProcessor(RelationalProcessor):
 
         # ---------- CSV
         if filepath.endswith(".csv"):
-            # df1 -> journal article         // columns = 'doi', 'title', 'type', 'publication_year', 'issue', 'volume'
-            # df2 -> book-chapter            // columns = 'doi', 'title', 'type', 'publication_year', 'chapter'
-            # df3 -> proceedings-paper       // columns = 'doi', 'title', 'type', 'publication_year'
-            # df4 -> Venue_book              // columns = 'doi', 'publication_venue', 'venue_type', 'crossref'
-            # df5 -> Venue_journal           // columns = 'doi', 'publication_venue', 'venue_type', 'crossref'
-            # df6 -> Venue_proceedings-event // columns = 'doi', 'publication_venue', 'venue_type', 'crossref', 'event'
+            # df1 -> journal article         // columns = 'id_doi', 'title', 'type', 'publication_year', 'issue', 'volume'
+            # df2 -> book-chapter            // columns = 'id_doi', 'title', 'type', 'publication_year', 'chapter'
+            # df3 -> proceedings-paper       // columns = 'id_doi', 'title', 'type', 'publication_year'
+            # df4 -> Venue_book              // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref'
+            # df5 -> Venue_journal           // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref'
+            # df6 -> Venue_proceedings-event // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref', 'event'
             df1_r, df2_r, df3_r, df4_r, df5_r, df6_r = readCSV(filepath)
 
             # ----- DATABASE CONNECTION
@@ -293,7 +293,7 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 
-# TEST AREA
+""" # TEST AREA
 rel_path = "relational.db"
 rel_dp = RelationalDataProcessor()
 rel_dp.setDbPath(rel_path)
@@ -320,7 +320,5 @@ q11 = rel_qp.getPublicationAuthors("doi:10.1007/s11192-021-04097-5")
 q12 = rel_qp.getPublicationsByAuthorName("Per")
 q13 = rel_qp.getDistinctPublisherOfPublications(["doi:10.1007/978-3-030-61244-3_16","doi:10.1371/journal.pbio.3000385","doi:10.1007/s11192-018-2796-5"])
 
-print(q4)
-
 # Checking the superclass is correct or not
-# print(rel_qp.__bases__)
+# print(rel_qp.__bases__) """
