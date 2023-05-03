@@ -54,12 +54,12 @@ class RelationalDataProcessor(RelationalProcessor):
 
         # ---------- CSV
         if filepath.endswith(".csv"):
-            # df1 -> journal article         // columns = 'id', 'title', 'type', 'publication_year', 'issue', 'volume'
-            # df2 -> book-chapter            // columns = 'id', 'title', 'type', 'publication_year', 'chapter'
-            # df3 -> proceedings-paper       // columns = 'id', 'title', 'type', 'publication_year'
-            # df4 -> Venue_book              // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
-            # df5 -> Venue_journal           // columns = 'id', 'publication_venue', 'venue_type', 'publisher'
-            # df6 -> Venue_proceedings-event // columns = 'id', 'publication_venue', 'venue_type', 'publisher', 'event'
+            # df1 -> journal article         // columns = 'doi', 'title', 'type', 'publication_year', 'issue', 'volume'
+            # df2 -> book-chapter            // columns = 'doi', 'title', 'type', 'publication_year', 'chapter'
+            # df3 -> proceedings-paper       // columns = 'doi', 'title', 'type', 'publication_year'
+            # df4 -> Venue_book              // columns = 'doi', 'publication_venue', 'venue_type', 'crossref'
+            # df5 -> Venue_journal           // columns = 'doi', 'publication_venue', 'venue_type', 'crossref'
+            # df6 -> Venue_proceedings-event // columns = 'doi', 'publication_venue', 'venue_type', 'crossref', 'event'
             df1_r, df2_r, df3_r, df4_r, df5_r, df6_r = readCSV(filepath)
 
             # ----- DATABASE CONNECTION
