@@ -148,9 +148,26 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
 
     # q4
     def getMostCitedVenue(self):
-        QR_4 = pd.DataFrame()
-        print("don the things here")
-        return QR_4
+        with sql3.connect(self.getDbPath()) as qrdb:
+            cur = qrdb.cursor()
+            query1 = "SELECT publication_venue, COUNT(publication_venue) as num_cit FROM JournalTable LEFT JOIN CitationsTable ON JournalTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL GROUP BY publication_venue UNION SELECT publication_venue, COUNT(publication_venue) as num_cit FROM BookTable LEFT JOIN CitationsTable ON BookTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL GROUP BY publication_venue UNION SELECT publication_venue, COUNT(publication_venue) as num_cit FROM ProceedingsTable LEFT JOIN CitationsTable ON ProceedingsTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL GROUP BY publication_venue ORDER BY num_cit DESC"
+            cur.execute(query1)
+            result_q1 = cur.fetchall()
+            max = result_q1[0][1]
+            result1 = list()
+            for item in result_q1:
+                index = result_q1.index(item)
+                if result_q1[index][1] == max:
+                    tpl = tuple((result_q1[index][0],max))
+                    result1.append(tpl)
+            df1 = pd.DataFrame(data=result1,columns=["publication_venue","num_cit"])
+            query2 = "SELECT issn_isbn, NULL AS event, publication_venue, id_crossref, publisher FROM VenuesIdTable LEFT JOIN JournalTable ON VenuesIdTable.doi==JournalTable.id_doi LEFT JOIN PublishersTable ON JournalTable.id_crossref==PublishersTable.crossref UNION SELECT issn_isbn, NULL AS event, publication_venue, id_crossref, publisher FROM VenuesIdTable LEFT JOIN BookTable ON VenuesIdTable.doi==BookTable.id_doi LEFT JOIN PublishersTable ON BookTable.id_crossref==PublishersTable.crossref UNION SELECT issn_isbn, event, publication_venue, id_crossref, publisher FROM VenuesIdTable LEFT JOIN ProceedingsTable ON VenuesIdTable.doi==ProceedingsTable.id_doi LEFT JOIN PublishersTable ON ProceedingsTable.id_crossref==PublishersTable.crossref"
+            cur.execute(query2)
+            result_q2 = cur.fetchall()
+            df2 = pd.DataFrame(data=result_q2, columns=["issn_isbn", "event", "publication_venue", "id_crossref", "publisher"])
+            final_result = pd.merge(left=df2, right=df1, left_on="publication_venue", right_on="publication_venue")
+            qrdb.commit()
+        return final_result
 
     # q5
     def getVenuesByPublisherId(self, crossref):
@@ -292,7 +309,7 @@ rel_qp.setDbPath(rel_path)
 q1 = rel_qp.getPublicationsPublishedInYear(2020)
 q2 = rel_qp.getPublicationsByAuthorId("0000-0003-0530-4305")
 q3 = rel_qp.getMostCitedPublication()
-#q4 = rel_qp.getMostCitedVenue()
+q4 = rel_qp.getMostCitedVenue()
 q5 = rel_qp.getVenuesByPublisherId("crossref:301")
 q6 = rel_qp.getPublicationInVenue("issn:2641-3337")
 q7 = rel_qp.getJournalArticlesInIssue("10","126","issn:0138-9130")
