@@ -1,0 +1,11 @@
+
+__pycache__/graphData_Manager.cpython-310.pyc
+.DS_Store
+__pycache__/GenericQueryP.cpython-310.pyc
+__pycache__/GenericQueryP.cpython-310.pyc
+__pycache__/graphData_Manager.cpython-310.pyc
+__pycache__/ModelClasses.cpython-310.pyc
+__pycache__/relationalData_Manager.cpython-310.pyc
+*.jar
+blazegraph.jnl
+rules.log
