@@ -320,5 +320,10 @@ q11 = rel_qp.getPublicationAuthors("doi:10.1007/s11192-021-04097-5")
 q12 = rel_qp.getPublicationsByAuthorName("Per")
 q13 = rel_qp.getDistinctPublisherOfPublications(["doi:10.1007/978-3-030-61244-3_16","doi:10.1371/journal.pbio.3000385","doi:10.1007/s11192-018-2796-5"])
 
+
+print(q5)
+print(q5.groupby(['publication_venue']))
+
 # Checking the superclass is correct or not
 # print(rel_qp.__bases__) """
+ """
