@@ -124,31 +124,31 @@ def check_repetedDOI():
     return True
 
 
-def create_pubOBJ():
+def createPublicationObj(doi):
     # data for general publications
     # use the id, publicationYear, title, identifiers, publicationVenue, author, cites
     # use the author constructor
     return True
 
 
-def create_jouartOBJ():
+def createJournalArticleObj(doi,issue,volume):
     return True
 
 
-def create_authOBJ():
+def createAuthorObj(orcid,given,family):
     return True
 
 
-def create_venueOBJ():
+def createVenueObj():
     return True
 
 
-def create_proceddingsOBJ():
+def createProceedingObj():
     # create proceddings venue object here
     return True
 
 
-def create_publisherOBJ():
+def createPublisherObj():
     return True
 
 
