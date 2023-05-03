@@ -86,19 +86,19 @@ def readCSV(path):
     # store VeB_DF
     filtered_df = D0.query("venue_type == 'book'")
     VeB_df = filtered_df.drop(columns=['title', 'type', 'publication_year', 'issue', 'volume', 'chapter', 'event'])
-    VeB_df = VeB_df.rename(columns={'id':'id_doi','publisher':'crossref'})
+    VeB_df = VeB_df.rename(columns={'id':'id_doi','publisher':'id_crossref'})
     
 
     # store VeJ_DF
     filtered_df = D0.query("venue_type == 'journal'")
     VeJ_df = filtered_df.drop(columns=['title', 'type', 'publication_year', 'issue', 'volume', 'chapter', 'event'])
-    VeJ_df = VeJ_df.rename(columns={'id':'id_doi','publisher':'crossref'})
+    VeJ_df = VeJ_df.rename(columns={'id':'id_doi','publisher':'id_crossref'})
    
 
     # store VePE_DF
     filtered_df = D0.query("venue_type == 'proceedings'")
     VePE_df = filtered_df.drop(columns=['title', 'type', 'publication_year', 'issue', 'volume', 'chapter'])
-    VePE_df = VePE_df.rename(columns={'id':'id_doi','publisher':'crossref'})
+    VePE_df = VePE_df.rename(columns={'id':'id_doi','publisher':'id_crossref'})
     
 
     return JA_df, BC_df, PP_df, VeB_df, VeJ_df, VePE_df

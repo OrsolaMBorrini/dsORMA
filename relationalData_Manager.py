@@ -101,11 +101,13 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         super().__init__()
 
     # -- Queries
+
+    # q1
     def getPublicationsPublishedInYear(self, year):
         if isinstance(year,int):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
-                query = "SELECT id, type FROM JournalArticleTable WHERE publication_year='{year}' UNION SELECT id, type FROM BookChapterTable WHERE publication_year='{year}' UNION SELECT id, type FROM ProceedingsPaperTable WHERE publication_year='{year}'".format(year=year)
+                query = "SELECT id_doi, type FROM JournalArticleTable WHERE publication_year='{year}' UNION SELECT id_doi, type FROM BookChapterTable WHERE publication_year='{year}' UNION SELECT id_doi, type FROM ProceedingsPaperTable WHERE publication_year='{year}'".format(year=year)
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit()
@@ -113,11 +115,12 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         else:
             raise Exception("The input parameter is not an integer!")
     
+    # q2
     def getPublicationsByAuthorId(self, orcid):
         if isinstance(orcid,str):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
-                query = "SELECT id, type, orcid FROM JournalArticleTable LEFT JOIN AuthorsTable ON JournalArticleTable.id==AuthorsTable.doi WHERE orcid = '{orcid}' UNION SELECT id, type, orcid FROM BookChapterTable LEFT JOIN AuthorsTable ON BookChapterTable.id==AuthorsTable.doi WHERE orcid = '{orcid}' UNION SELECT id, type, orcid FROM ProceedingsPaperTable LEFT JOIN AuthorsTable ON ProceedingsPaperTable.id==AuthorsTable.doi WHERE orcid = '{orcid}'".format(orcid=orcid)
+                query = "SELECT id_doi, type, orcid FROM JournalArticleTable LEFT JOIN AuthorsTable ON JournalArticleTable.id_doi==AuthorsTable.doi WHERE orcid = '{orcid}' UNION SELECT id_doi, type, orcid FROM BookChapterTable LEFT JOIN AuthorsTable ON BookChapterTable.id_doi==AuthorsTable.doi WHERE orcid = '{orcid}' UNION SELECT id_doi, type, orcid FROM ProceedingsPaperTable LEFT JOIN AuthorsTable ON ProceedingsPaperTable.id_doi==AuthorsTable.doi WHERE orcid = '{orcid}'".format(orcid=orcid)
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit()
@@ -125,6 +128,7 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         else:
             raise Exception("The input parameter is not a string!")
         
+    # q3
     def getMostCitedPublication(self):
         with sql3.connect(self.getDbPath()) as qrdb:
             cur = qrdb.cursor()
@@ -142,16 +146,18 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
             qrdb.commit()
         return df1
 
+    # q4
     def getMostCitedVenue(self):
         QR_4 = pd.DataFrame()
         print("don the things here")
         return QR_4
 
+    # q5
     def getVenuesByPublisherId(self, crossref):
         if isinstance(crossref, str):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
-                query = "SELECT issn_isbn, publication_venue, venue_type, publisher FROM JournalTable LEFT JOIN VenuesIDTable on JournalTable.id == VenuesIDTable.doi WHERE publisher = '{crossref}' UNION SELECT issn_isbn, publication_venue, venue_type, publisher FROM BookTable LEFT JOIN VenuesIDTable on BookTable.id == VenuesIDTable.doi WHERE publisher = '{crossref}' UNION SELECT issn_isbn, publication_venue, venue_type, publisher FROM ProceedingsTable LEFT JOIN VenuesIDTable on ProceedingsTable.id == VenuesIDTable.doi WHERE publisher = '{crossref}'".format(crossref=crossref)
+                query = "SELECT issn_isbn, publication_venue, venue_type, id_crossref FROM JournalTable LEFT JOIN VenuesIDTable on JournalTable.id_doi == VenuesIDTable.doi WHERE id_crossref = '{crossref}' UNION SELECT issn_isbn, publication_venue, venue_type, id_crossref FROM BookTable LEFT JOIN VenuesIDTable on BookTable.id_doi == VenuesIDTable.doi WHERE id_crossref = '{crossref}' UNION SELECT issn_isbn, publication_venue, venue_type, id_crossref FROM ProceedingsTable LEFT JOIN VenuesIDTable on ProceedingsTable.id_doi == VenuesIDTable.doi WHERE id_crossref = '{crossref}'".format(crossref=crossref)
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit
@@ -159,11 +165,12 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         else:
             raise Exception("The input parameter is not a string!")
 
+    # q6
     def getPublicationInVenue(self, issn_isbn):
         if isinstance(issn_isbn, str):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
-                query = "SELECT id, type FROM JournalArticleTable LEFT JOIN VenuesIDTable on JournalArticleTable.id == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}' UNION SELECT id, type FROM BookChapterTable LEFT JOIN VenuesIDTable on BookChapterTable.id == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}' UNION SELECT id, type FROM ProceedingsPaperTable LEFT JOIN VenuesIDTable on ProceedingsPaperTable.id == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}'".format(issn_isbn=issn_isbn)
+                query = "SELECT id_doi, type FROM JournalArticleTable LEFT JOIN VenuesIDTable on JournalArticleTable.id_doi == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}' UNION SELECT id_doi, type FROM BookChapterTable LEFT JOIN VenuesIDTable on BookChapterTable.id_doi == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}' UNION SELECT id_doi, type FROM ProceedingsPaperTable LEFT JOIN VenuesIDTable on ProceedingsPaperTable.id_doi == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}'".format(issn_isbn=issn_isbn)
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit
@@ -171,11 +178,12 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         else:
             raise Exception("The input parameter is not a string!")
 
+    # q7
     def getJournalArticlesInIssue(self, issue, volume, journalId):
         if isinstance(issue,str) and isinstance(volume,str) and isinstance(journalId,str):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
-                query = "SELECT id, type, issue, volume, issn_isbn FROM JournalArticleTable LEFT JOIN VenuesIDTable ON JournalArticleTable.id == VenuesIDTable.doi WHERE issue = '{issue}' AND volume = '{volume}' AND issn_isbn = '{issn_isbn}'".format(issue=issue, volume=volume, issn_isbn=journalId)
+                query = "SELECT id_doi, type, issue, volume, issn_isbn FROM JournalArticleTable LEFT JOIN VenuesIDTable ON JournalArticleTable.id_doi == VenuesIDTable.doi WHERE issue = '{issue}' AND volume = '{volume}' AND issn_isbn = '{issn_isbn}'".format(issue=issue, volume=volume, issn_isbn=journalId)
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit
@@ -183,11 +191,12 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         else:
             raise Exception("All or some of the input parameters are not strings!")
 
+    # q8
     def getJournalArticlesInVolume(self, volume, journalId):
         if isinstance(volume,str) and isinstance(journalId,str):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
-                query = "SELECT id, type, issue, volume, issn_isbn FROM JournalArticleTable LEFT JOIN VenuesIDTable ON JournalArticleTable.id == VenuesIDTable.doi WHERE volume = '{volume}' AND issn_isbn = '{issn_isbn}'".format(volume=volume, issn_isbn=journalId)
+                query = "SELECT id_doi, type, issue, volume, issn_isbn FROM JournalArticleTable LEFT JOIN VenuesIDTable ON JournalArticleTable.id_doi == VenuesIDTable.doi WHERE volume = '{volume}' AND issn_isbn = '{issn_isbn}'".format(volume=volume, issn_isbn=journalId)
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit
@@ -195,11 +204,12 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         else:
             raise Exception("All or some of the input parameters are not strings!")
 
+    # q9
     def getJournalArticlesInJournal(self, journalId):
         if isinstance(journalId,str):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
-                query = "SELECT id, type, issue, volume, issn_isbn FROM JournalArticleTable LEFT JOIN VenuesIDTable ON JournalArticleTable.id == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}'".format(issn_isbn=journalId)
+                query = "SELECT id_doi, type, issue, volume, issn_isbn FROM JournalArticleTable LEFT JOIN VenuesIDTable ON JournalArticleTable.id_doi == VenuesIDTable.doi WHERE issn_isbn = '{issn_isbn}'".format(issn_isbn=journalId)
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit
@@ -207,11 +217,12 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         else:
             raise Exception("The input parameter is not a string!")
 
+    # q10
     def getProceedingsByEvent(self, eventPartialName):
         if isinstance(eventPartialName,str):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
-                query = "SELECT publication_venue, issn_isbn, event FROM ProceedingsTable LEFT JOIN VenuesIDTable ON ProceedingsTable.id == VenuesIDTable.doi WHERE event LIKE '%{event}%'".format(event=eventPartialName)
+                query = "SELECT publication_venue, issn_isbn, event FROM ProceedingsTable LEFT JOIN VenuesIDTable ON ProceedingsTable.id_doi == VenuesIDTable.doi WHERE event LIKE '%{event}%'".format(event=eventPartialName)
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit
@@ -219,6 +230,7 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         else:
             raise Exception("The input parameter is not a string!")
 
+    # q11
     def getPublicationAuthors(self, doi):
         if isinstance(doi,str):
             with sql3.connect(self.getDbPath()) as qrdb:
@@ -231,11 +243,12 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         else:
             raise Exception("The input parameter is not a string!")
 
+    # q12
     def getPublicationsByAuthorName(self, authorPartialName):
         if isinstance(authorPartialName,str):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
-                query = "SELECT doi, type, issue, volume, NULL AS chapter, NULL AS event FROM JournalArticleTable LEFT JOIN AuthorsTable ON JournalArticleTable.id == AuthorsTable.doi WHERE family LIKE '%{family}%' OR given LIKE '%{given}%' UNION SELECT doi, type, NULL AS issue, NULL AS volume, chapter, NULL AS event FROM BookChapterTable LEFT JOIN AuthorsTable ON BookChapterTable.id == AuthorsTable.doi WHERE family LIKE '%{family}%' OR given LIKE '%{given}%' UNION SELECT doi, type, NULL AS issue, NULL AS volume, NULL AS chapter, NULL AS event FROM ProceedingsPaperTable LEFT JOIN AuthorsTable ON ProceedingsPaperTable.id == AuthorsTable.doi WHERE family LIKE '%{family}%' OR given LIKE '%{given}%'".format(family=authorPartialName,given=authorPartialName)
+                query = "SELECT doi, type, issue, volume, NULL AS chapter, NULL AS event FROM JournalArticleTable LEFT JOIN AuthorsTable ON JournalArticleTable.id_doi == AuthorsTable.doi WHERE family LIKE '%{family}%' OR given LIKE '%{given}%' UNION SELECT doi, type, NULL AS issue, NULL AS volume, chapter, NULL AS event FROM BookChapterTable LEFT JOIN AuthorsTable ON BookChapterTable.id_doi == AuthorsTable.doi WHERE family LIKE '%{family}%' OR given LIKE '%{given}%' UNION SELECT doi, type, NULL AS issue, NULL AS volume, NULL AS chapter, NULL AS event FROM ProceedingsPaperTable LEFT JOIN AuthorsTable ON ProceedingsPaperTable.id_doi == AuthorsTable.doi WHERE family LIKE '%{family}%' OR given LIKE '%{given}%'".format(family=authorPartialName,given=authorPartialName)
                 cur.execute(query)
                 result = cur.fetchall()
                 qrdb.commit
@@ -243,14 +256,14 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
         else:
             raise Exception("The input parameter is not a string!")
 
-    # TEST THIS LAST QUERY !
+    # q13
     def getDistinctPublisherOfPublications(self, doiList):
         if isinstance(doiList,list) and all(isinstance(n, str) for n in doiList):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
                 result = list()
                 for item in doiList:
-                    query = "SELECT publisher, crossref FROM JournalTable LEFT JOIN PublishersTable ON JournalTable.publisher == PublishersTable.crossref WHERE id = '{doi}' UNION SELECT publisher, crossref FROM BookTable LEFT JOIN PublishersTable ON BookTable.publisher==PublishersTable.crossref WHERE id = '{doi}' UNION SELECT publisher, crossref FROM ProceedingsTable LEFT JOIN PublishersTable ON ProceedingsTable.publisher==PublishersTable.crossref WHERE id = '{doi}'".format(doi = item)
+                    query = "SELECT publisher, crossref FROM JournalTable LEFT JOIN PublishersTable ON JournalTable.id_crossref == PublishersTable.crossref WHERE id_doi = '{doi}' UNION SELECT publisher, crossref FROM BookTable LEFT JOIN PublishersTable ON BookTable.id_crossref==PublishersTable.crossref WHERE id_doi = '{doi}' UNION SELECT publisher, crossref FROM ProceedingsTable LEFT JOIN PublishersTable ON ProceedingsTable.id_crossref==PublishersTable.crossref WHERE id_doi = '{doi}'".format(doi = item)
                     cur.execute(query)
                     result_q = cur.fetchall()
                     result.extend(result_q)
@@ -288,9 +301,9 @@ q9 = rel_qp.getJournalArticlesInJournal("issn:0138-9130")
 q10 = rel_qp.getProceedingsByEvent("arz")
 q11 = rel_qp.getPublicationAuthors("doi:10.1007/s11192-021-04097-5")
 q12 = rel_qp.getPublicationsByAuthorName("Per")
-# TEST THIS QUERY q13 = rel_qp.getDistinctPublisherOfPublications(["doi:10.1007/978-3-030-61244-3_16","doi:10.1371/journal.pbio.3000385","doi:10.1007/s11192-018-2796-5"])
+q13 = rel_qp.getDistinctPublisherOfPublications(["doi:10.1007/978-3-030-61244-3_16","doi:10.1371/journal.pbio.3000385","doi:10.1007/s11192-018-2796-5"])
 
-#print(q13)
+print(q4)
 
 # Checking the superclass is correct or not
 # print(rel_qp.__bases__)
