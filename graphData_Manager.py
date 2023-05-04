@@ -181,11 +181,33 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             #df10 -> publishers            // columns = 'crossref', 'publisher'
             df7_g, df8_g, df9_g, df10_g = readJSON(filepath)
 
+            # make publisher triples
+            for index, row in df10_g.iterrows():
+
+                localID = "publisher-" +str(row["id_doi"])
+                subj = URIRef(base_url+localID)
+
+                if row["id_doi"] in pubURIs:
+                    pass
+                else: 
+                    triples.add((subj,RDF.type,Publication))                                    # add rdf type
+                    triples.add((subj,RDF.type,ProceedingsPaper))                               # add subclass type
+                    triples.add((subj,id,Literal(row["id_doi"])))                               # add id_doi
+                    triples.add((subj,title,Literal(row["title"])))                             # add title
+                    triples.add((subj,publicationYear,Literal(row["publication_year"])))        # add publication year
+
+
+                    #adding the relation to the venue
+                    
+
+                    # add the URI to the URI dict
+                    pubURIs.update({row["id_doi"]:subj})
+
         
 
         if df10_g.empty is False and df1_g.empty is False:
             print("JSON + CSV is uploaded")
-            
+
         else:
             pass
             

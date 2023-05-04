@@ -154,7 +154,7 @@ def createPublisherObj():
 
 # testing area
 
-df1,df2,df3,df4,df5,df6 = readCSV("testData/relational_publications.csv")
+#df1,df2,df3,df4,df5,df6 = readCSV("testData/relational_publications.csv")
 '''
 print(df1.head(2))
 print(df1.columns)
@@ -173,4 +173,10 @@ print(df5.columns)
 print('/n')
 print(df6.head(2))
 print(df6.columns)
+'''
+
+#df7,df8,df9,df10 = readJSON("testData/graph_other_data.json")
+'''
+print(df10.columns)
+print(df10.head)
 '''
