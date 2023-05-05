@@ -1,4 +1,5 @@
 from rdflib import Graph, URIRef, Literal, RDF
+import urllib.parse
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 from sparql_dataframe import get
 
@@ -88,20 +89,59 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
         # ---------- CSV 
         if filepath.endswith(".csv"):
         
-            # df1_g -> journal article         // columns = 'id_doi', 'title', 'type', 'publication_year', 'issue', 'volume'
-            # df2_g -> book-chapter            // columns = 'id_doi', 'title', 'type', 'publication_year', 'chapter'
-            # df3 -> proceedings-paper       // columns = 'id_doi', 'title', 'type', 'publication_year'
+            # df1_g -> journal article         // columns = 'id_doi', 'title', 'type','publication_venue', 'publication_year', 'issue', 'volume'
+            # df2_g -> book-chapter            // columns = 'id_doi', 'title', 'type','publication_venue', 'publication_year', 'chapter'
+            # df3 -> proceedings-paper       // columns = 'id_doi', 'title', 'type','publication_venue', 'publication_year'
             # df4 -> Venue_book              // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref'
             # df5 -> Venue_journal           // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref'
-            # df6 -> Venue_proceedings-event // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref', 'event
+            # df6 -> Venue_proceedings-event // columns = 'id_doi', 'publication_venue', 'venue_type', 'id_crossref', 'event'
             df1_g, df2_g, df3_g, df4_g, df5_g, df6_g = readCSV(filepath)
-            
 
             # making VeJ triples
+            for index, row in df5_g.iterrows():
+                
+                localID = "venue-" +str(row["publication_venue"]).replace(" ", "")
+                subj = URIRef(base_url+urllib.parse.quote(localID))
+
+                if row["publication_venue"] in venueURIs:
+                    pass
+                else: 
+                    triples.add((subj,RDF.type,Journal))                                       # add rdf sub-type
+                    triples.add((subj,title,Literal(row['publication_venue'])))                # add venue title
+
+                    # add the URI to the URI dict
+                    venueURIs.update({row["publication_venue"]:subj})
 
             # making VeB triples
+            for index, row in df4_g.iterrows():
+
+                localID = "venue-" +str(row["publication_venue"]).replace(" ", "")
+                subj = URIRef(base_url+localID)
+
+                if row["publication_venue"] in venueURIs:
+                    pass
+                else: 
+                    triples.add((subj,RDF.type,Book))                                          # add rdf sub-type
+                    triples.add((subj,title,Literal(row['publication_venue'])))                # add venue title
+
+                    # add the URI to the URI dict
+                    venueURIs.update({row["publication_venue"]:subj})
 
             # making VePE triples
+            for index, row in df6_g.iterrows():
+
+                localID = "venue-" +str(row["publication_venue"]).replace(" ", "")
+                subj = URIRef(base_url+localID)
+
+                if row["publication_venue"] in venueURIs:
+                    pass
+                else: 
+                    triples.add((subj,RDF.type,Proceedings))                                   # add rdf sub-type
+                    triples.add((subj,title,Literal(row['publication_venue'])))                # add venue title
+                    triples.add((subj,event,Literal(row['event'])))                            # add venue event title
+
+                    # add the URI to the URI dict
+                    venueURIs.update({row["publication_venue"]:subj})   
 
             # making JA triples
             for index, row in df1_g.iterrows():
@@ -121,7 +161,11 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
                     triples.add((subj,volume,Literal(row["volume"])))                           # add issue number
 
                     #adding the relation to the venue
-                    
+                    #need to match the doi to get the publication venue
+                    if row["publication_venue"] in venueURIs:
+                        triples.add((subj,publicationVenue,venueURIs[row["publication_venue"]])) # add venue relation
+                    else:
+                        pass
 
                     # add the URI to the URI dict
                     pubURIs.update({row["id_doi"]:subj})
@@ -144,6 +188,10 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
 
 
                     #adding the relation to the venue
+                    if row["publication_venue"] in venueURIs:
+                        triples.add((subj,publicationVenue,venueURIs[row["publication_venue"]])) # add venue relation
+                    else:
+                        pass
                     
 
                     # add the URI to the URI dict
@@ -166,13 +214,16 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
 
 
                     #adding the relation to the venue
+                    if row["publication_venue"] in venueURIs:
+                        triples.add((subj,publicationVenue,venueURIs[row["publication_venue"]])) # add venue relation
+                    else:
+                        pass
                     
 
                     # add the URI to the URI dict
                     pubURIs.update({row["id_doi"]:subj})
 
-
-            
+       
         # ---------- JSON 
         elif filepath.endswith(".json"):
             #df7  -> authors                // columns = 'doi', 'family', 'given', 'orcid'
@@ -184,38 +235,71 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
             # make publisher triples
             for index, row in df10_g.iterrows():
 
-                localID = "publisher-" +str(row["id_doi"])
+                localID = "publisher-" +str(row["crossref"])
                 subj = URIRef(base_url+localID)
 
-                if row["id_doi"] in pubURIs:
+                if row["crossref"] in publisherURIs:
                     pass
                 else: 
-                    triples.add((subj,RDF.type,Publication))                                    # add rdf type
-                    triples.add((subj,RDF.type,ProceedingsPaper))                               # add subclass type
-                    triples.add((subj,id,Literal(row["id_doi"])))                               # add id_doi
-                    triples.add((subj,title,Literal(row["title"])))                             # add title
-                    triples.add((subj,publicationYear,Literal(row["publication_year"])))        # add publication year
-
-
-                    #adding the relation to the venue
+                    triples.add((subj,RDF.type,publisher))                                          # add rdf type
+                    triples.add((subj,id,Literal(row["crossref"])))                                 # add id_doi
+                    triples.add((subj,title,Literal(row["publisher"])))                             # add title
                     
 
                     # add the URI to the URI dict
-                    pubURIs.update({row["id_doi"]:subj})
+                    publisherURIs.update({row["crossref"]:subj})
 
-        
+            # malke author triples
+            for index, row in df7_g.iterrows():
+
+                localID = "author-" +str(row["orcid"])
+                subj = URIRef(base_url+localID)
+
+                if row["orcid"] in authorURIs:
+                    pass
+                else: 
+                    triples.add((subj,RDF.type,author))                                      # add rdf type
+                    triples.add((subj,id,Literal(row["orcid"])))                             # add orcid
+                    triples.add((subj,name,Literal(row["given"])))                           # add first name
+                    triples.add((subj,surname,Literal(row["family"])))                       # add first name
+                    
+
+                    # add the URI to the URI dict
+                    authorURIs.update({row["orcid"]:subj})
 
         if df10_g.empty is False and df1_g.empty is False:
             print("JSON + CSV is uploaded")
 
+            # make publication-author relations and publication-citations relations
+            for k in pubURIs:
+                subjP = pubURIs[k]
+                # group by DOI to get all the authors of 'k'
+                authgrps = df7_g.groupby(['doi'])
+                authdf = authgrps.get_group(k)
+                for index,row in authdf.iterrows():
+                    if row['orcid'] in authorURIs:
+                        triples.add((subjP,author,authorURIs[row['orcid']]))
+
+                # group by DOI to get all citations of 'k'
+                citgrp = df9_g.groupby(['doi'])
+                if k in citgrp.groups.keys():
+                    citdf = citgrp.get_group(k)
+                    for index,row in citdf.iterrows():
+                        if row['cited_doi'] in pubURIs:
+                            triples.add((subjP,citation,pubURIs[row['cited_doi']]))
+                else:
+                    continue
+
+            # make venue-publisher relations
+
+            # make venue ids triples
+ 
         else:
             pass
             
         
 
         #example
-        #subj = URIRef(base_url + local_id2)   #we have to make the subject a URI and only then can it be added to the triple
-        #triples.add((subj,familyName,Literal(value['family'])))
 
         # Step-2 : iterate over the data to create triples
             # Avoid repetition
@@ -319,6 +403,7 @@ grp_dp.uploadData("testData/graph_other_data.json")
 grp_qp = TriplestoreQueryProcessor()
 grp_qp.setEndpointUrl(grp_endpoint)
 
-
-
-#
+'''
+for i in publisherURIs:
+    print (i, publisherURIs[i])
+'''
