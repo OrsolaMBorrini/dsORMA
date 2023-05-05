@@ -66,19 +66,19 @@ def readCSV(path):
 
     # store JA_df
     filtered_df = D0.query("type == 'journal-article'")
-    JA_df = filtered_df.drop(columns=['chapter', 'publication_venue', 'venue_type', 'publisher', 'event'])
+    JA_df = filtered_df.drop(columns=['chapter', 'venue_type', 'publisher', 'event'])
     JA_df = JA_df.rename(columns={'id':'id_doi'})
 
     # store BC_df
     filtered_df = D0.query("type == 'book-chapter'")
-    BC_df = filtered_df.drop(columns=['issue', 'volume', 'publication_venue', 'venue_type', 'publisher', 'event'])
+    BC_df = filtered_df.drop(columns=['issue', 'volume', 'venue_type', 'publisher', 'event'])
     BC_df = BC_df.rename(columns={'id':'id_doi'})
     # print(BC_df.head(3))
     
 
     # store PP_df
     filtered_df = D0.query("type == 'proceedings-paper'")
-    PP_df = filtered_df.drop(columns=['issue', 'volume', 'chapter', 'publication_venue', 'venue_type', 'publisher', 'event'])
+    PP_df = filtered_df.drop(columns=['issue', 'volume', 'chapter', 'venue_type', 'publisher', 'event'])
     PP_df = PP_df.rename(columns={'id':'id_doi'})
     # print(PP_df.head(3))
     
