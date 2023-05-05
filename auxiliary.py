@@ -175,8 +175,11 @@ print(df6.head(2))
 print(df6.columns)
 '''
 
-#df7,df8,df9,df10 = readJSON("testData/graph_other_data.json")
+df7,df8,df9,df10 = readJSON("testData/graph_other_data.json")
 '''
 print(df10.columns)
 print(df10.head)
 '''
+
+print(df7.columns)
+print(df7.head)
