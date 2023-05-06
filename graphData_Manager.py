@@ -392,62 +392,286 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 
     def getPublicationsByAuthorId(self, orcid):
         QR_2 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
+
+        SELECT ?publication 
+        WHERE {{
+        ?publication rdf:type fabio:Expression ;
+                    schema:author ?author .
+        ?author schema:identifier "{orcido}"
+        }}
+        """
+        QR_2 = get(endpoint,query.format(orcido = orcid),True)
         return QR_2
     
     def getMostCitedPublication(self):
         QR_3 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
+
+
+        SELECT  ?ref_doi (COUNT(?cited) AS ?num_citations)
+        WHERE { 
+        ?publication schema:citation ?cited.
+        ?cited schema:identifier ?ref_doi.
+        }
+        GROUP BY ?ref_doi
+        ORDER BY desc(?num_citations)
+        limit 1
+        }}
+        """
+        QR_3 = get(endpoint,query,True)
         return QR_3
     
     def getMostCitedVenue(self):
         QR_4 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX frbr: <http://purl.org/vocab/frbr/core#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
+
+        SELECT ?venue ?name_venue ?issn_isbn ?publisher ?name_pub(COUNT(?venue) AS ?num_cit) 
+        WHERE {{ 
+        VALUES ?type { schema:Periodical schema:Book schema:EventSeries } 
+        ?publication schema:citation ?citation;
+                    schema:identifier ?id.
+        ?citation schema:isPartOf ?venue.
+        ?venue rdf:type ?type;
+                schema:name ?name_venue;
+                schema:identifier ?issn_isbn;
+                schema:publisher ?organisation.
+        ?organisation schema:identifier ?publisher;
+                        schema:name ?name_pub.
+        }}
+        GROUP BY ?venue ?name_venue ?issn_isbn ?publisher ?name_pub
+        ORDER BY desc(?num_cit)
+        LIMIT 1
+        """
+        QR_4 = get(endpoint,query,True)
         return QR_4
     
     def getVenuesByPublisherId(self, crossref):
         QR_5 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX frbr: <http://purl.org/vocab/frbr/core#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
+
+        SELECT ?venue
+        WHERE {{
+        VALUES ?type {schema:Periodical schema:Book schema:EventSeries } 
+        ?venue rdf:type ?type ;
+                schema:publisher ?publisher .
+        ?publisher schema:identifier "{orgid}"
+        }}
+        """
+        QR_5 = get(endpoint,query.format(orgid = crossref),True)
         return QR_5
+    
+        # crossref:286
     
     def getPublicationInVenue(self, issn_isbn):
         QR_6 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX frbr: <http://purl.org/vocab/frbr/core#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
+
+        SELECT ?id
+        WHERE {{
+          VALUES ?type {schema:Periodical schema:Book schema:EventSeries } 
+        ?publication rdf:type fabio:Expression ;
+                    schema:isPartOf ?venue;
+                    schema:identifier ?id.
+        ?venue rdf:type ?type;
+                schema:identifier "{vid}".
+        }}
+        }}
+        """
+        QR_6 = get(endpoint,query.format(vid = issn_isbn),True)
         return QR_6
     
     def getJournalArticlesInIssue(self, issue, volume, ja_id):
         QR_7 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """ 
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX frbr: <http://purl.org/vocab/frbr/core#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
+
+        SELECT ?id ?publication
+        WHERE {{
+        ?publication rdf:type fabio:Expression ;
+                    rdf:type schema:ScholarlyArticle;
+                    schema:identifier ?id;
+                    schema:issueNumber "{one}";
+                    schema:volumeNumber "{two}";
+                    schema:isPartOf ?venue.
+        ?venue rdf:type schema:Periodical;
+                schema:identifier "{three}".  
+        }}
+        """
+        QR_7 = get(endpoint,query.format(one = issue,two = volume, three = ja_id),True)
         return QR_7
+    
+        # issueno - 3
+        # volumeno - 55
+        # venueid - issn:0219-1377
     
     def getJournalArticlesInVolume(self, volume, ja_id):
         QR_8 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """ 
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX frbr: <http://purl.org/vocab/frbr/core#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
+
+        SELECT ?id
+        WHERE {{
+        ?publication rdf:type fabio:Expression ;
+                    rdf:type schema:ScholarlyArticle;
+                    schema:identifier ?id;
+                    schema:volumeNumber "{one}";
+                    schema:isPartOf ?venue.
+        ?venue rdf:type schema:Periodical;
+                schema:identifier "{two}".  
+        }}
+        }} 
+        """
+        QR_8 = get(endpoint,query.format(one = volume,two = ja_id),True)
         return QR_8
     
     def getJournalArticlesInJournal(self, ja_id):
         QR_9 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """ 
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX frbr: <http://purl.org/vocab/frbr/core#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
+
+        SELECT ?id
+        WHERE {{
+        ?publication rdf:type fabio:Expression ;
+                    rdf:type schema:ScholarlyArticle;
+                    schema:identifier ?id;
+                    schema:volumeNumber ?vol;
+                    schema:isPartOf ?venue.
+        ?venue rdf:type schema:Periodical;
+                schema:identifier "{one}".  
+        }}
+        """
+        QR_8 = get(endpoint,query.format(one = ja_id),True)
         return QR_9
     
     def getProceedingsByEvent(self, eventName):
         QR_10 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """ 
+                PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                PREFIX frbr: <http://purl.org/vocab/frbr/core#>
+                PREFIX schema: <https://schema.org/>
+                PREFIX fabio: <http://purl.org/spar/fabio/>
+                PREFIX dcterm: <http://purl.org/dc/terms/>
+                select ?s ?n
+                where{{
+                ?s rdf:type fabio:ProceedingsPaper;
+                    schema:event ?n.
+                filter(regex(str(?n), '{partName}',"i"))  
+                        }}
+                """
+        QR_10 = get(endpoint,query.format(partName=eventName),True)
         return QR_10
     
     def getPublicationAuthors(self, doi):
         QR_11 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """ 
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX frbr: <http://purl.org/vocab/frbr/core#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
+
+        SELECT ?orcid ?firstName ?surName
+        WHERE {{
+          VALUES ?type {schema:ScholarlyArticle schema:Chapter schema:ProceedingsPaper } 
+        ?publication rdf:type fabio:Expression ;
+                    rdf:type ?type;
+                    schema:identifier "{doiQ}";
+                    schema:author ?author.
+        ?author schema:identifier ?orcid;
+                schema:givenName ?firstName;
+                schema:familyName ?surName.
+                       
+        }}
+        """
+        QR_11 = get(endpoint,query.format(doiQ=doi),True)
         return QR_11
     
     def getPublicationsByAuthorName(self, authorName):
         QR_12 = pd.DataFrame()
-        print("don the things here")
+        endpoint = self.getEndpointUrl()
+        query = """ 
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX frbr: <http://purl.org/vocab/frbr/core#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
+
+        SELECT ?orcid ?firstName ?surName ?id ?author
+        WHERE {{
+        ?publication rdf:type fabio:Expression ;
+                    schema:identifier ?id;
+                    schema:author ?author.
+        ?author schema:identifier ?orcid;
+                schema:givenName ?firstName;
+                schema:familyName ?surName.
+        filter(regex(str(?firstName), "{nome}","i") || regex(str(?surName), "{nome}","i"))                 
+        }}
+        """
+        QR_12 = get(endpoint,query.format(nome=authorName),True)
         return QR_12
     
     def getDistinctPublisherOfPublications(self, doi_list):
         QR_13 = pd.DataFrame()
-        print("don the things here")
+        for item in doi_list:
+            endpoint = self.getEndpointUrl()
+            query = """
+            PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX frbr: <http://purl.org/vocab/frbr/core#>
+            PREFIX schema: <https://schema.org/>
+            PREFIX fabio: <http://purl.org/spar/fabio/>
+
+            SELECT ?publisher ?crossref ?title
+            WHERE {{
+              VALUES ?type {schema:Periodical schema:Book schema:EventSeries }
+            ?publication rdf:type fabio:Expression ;
+                        schema:identifier "{doi}";
+                        schema:isPartOf ?venue.
+            ?venue rdf:type ?type;
+                    schema:publisher ?publisher.
+            ?publisher schema:identifier ?crossref;
+                        schema:name ?title.
+                
+            }}
+            """
+            result_q = get(endpoint,query.format(doi=item),True)
+            QR_13 = pd.concat([QR_13,result_q])
+        
         return QR_13
 
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
@@ -473,3 +697,6 @@ for i in publisherURIs:
 
 Q1 = grp_qp.getPublicationsPublishedInYear(2020)
 print(Q1)
+
+Q2 = grp_qp.getPublicationsByAuthorId("0000-0003-2717-6949")
+print(Q2)
