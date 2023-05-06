@@ -65,6 +65,8 @@ class TriplestoreProcessor(object):
     def getEndpointUrl(self):
         if self.endpointUrl == "":
             return "endpointUrl is currently unset" + self.endpointUrl
+        else:
+            return self.endpointUrl
 
     def setEndpointUrl(self, new_endpointUrl):
         if isinstance(new_endpointUrl,str):
@@ -338,8 +340,6 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
                         for idx,row in VeIDS.iterrows():
                             triples.add((subjV,id,Literal(row['issn_isbn'])))
 
-            
-        
         else:
             pass
             
@@ -369,9 +369,26 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         super().__init__()
 
     def getPublicationsPublishedInYear(self, year):
-        QR_1 = pd.DataFrame()
-        print("don the things here")
-        return QR_1
+        if isinstance(year,int):
+            QR_1 = pd.DataFrame()
+            endpoint = self.getEndpointUrl()
+            #endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
+            query = """
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX schema: <https://schema.org/>
+            PREFIX fabio: <http://purl.org/spar/fabio/>
+            PREFIX dbpedia: <https://dbpedia.org/ontology/>
+
+            SELECT ?publication1 ?year
+            WHERE {{
+            ?publication1 rdf:type fabio:Expression;
+                            dbpedia:year "{yearp}".        
+            }}
+            """
+            QR_1 = get(endpoint,query.format(yearp=year),True)
+            return QR_1
+        else:
+            raise Exception("The input parameter is not an integer!")
 
     def getPublicationsByAuthorId(self, orcid):
         QR_2 = pd.DataFrame()
@@ -440,8 +457,8 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
 grp_dp = TriplestoreDataProcessor()
 grp_dp.setEndpointUrl(grp_endpoint)
-grp_dp.uploadData("testData/graph_publications.csv")
-grp_dp.uploadData("testData/graph_other_data.json")
+#grp_dp.uploadData("testData/graph_publications.csv")
+#grp_dp.uploadData("testData/graph_other_data.json")
 
 # Checking the superclass is correct or not
 # print(grp_dp.__bases__)
@@ -453,3 +470,6 @@ grp_qp.setEndpointUrl(grp_endpoint)
 for i in publisherURIs:
     print (i, publisherURIs[i])
 '''
+
+Q1 = grp_qp.getPublicationsPublishedInYear(2020)
+print(Q1)
