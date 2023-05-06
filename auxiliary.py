@@ -139,9 +139,6 @@ def createProceedingObj():
     return True
 
 
-def createPublisherObj():
-    return True
-
 
 # testing area
 
