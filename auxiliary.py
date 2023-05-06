@@ -123,14 +123,6 @@ def dbupdater(graphvariable, endpointURI):
 def check_repetedDOI():
     return True
 
-
-def createPublicationObj(doi,dflst):
-    # data for general publications
-    # use the id, publicationYear, title, identifiers, publicationVenue, author, cites
-    # use the author constructor
-    return True
-
-
 def createJournalArticleObj(doi,issue,volume):
     return True
 
@@ -139,8 +131,7 @@ def createAuthorObj(orcid,given,family):
     return True
 
 
-def createVenueObj():
-    return True
+
 
 
 def createProceedingObj():
