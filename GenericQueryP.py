@@ -2,9 +2,7 @@ import pandas as pd
 import relationalData_Manager as rel
 import graphData_Manager as grp
 import ModelClasses as mdc
-from auxiliary import createPublicationObj
-
-from graphData_Manager import df1_g,df2_g,df3_g
+from auxiliary import createPublicationObj, createVenueObj
 
 class GenericQueryProcessor(object):
     # -- Constructor
@@ -150,5 +148,3 @@ class GenericQueryProcessor(object):
     # gq13 ---- TO DO 
     def getDistinctPublishersOfPublications(self, doiList):
         return True # list[Organisation]
-
-#createPublicationObj("doi:10.1016/j.websem.2021.100655",[df1_g,df2_g,df3_g])
