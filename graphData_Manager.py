@@ -372,7 +372,6 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         if isinstance(year,int):
             QR_1 = pd.DataFrame()
             endpoint = self.getEndpointUrl()
-            #endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
             query = """
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             PREFIX schema: <https://schema.org/>
@@ -382,7 +381,8 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
             SELECT ?publication1 ?year
             WHERE {{
             ?publication1 rdf:type fabio:Expression;
-                            dbpedia:year "{yearp}".        
+                            dbpedia:year ?year.  
+            FILTER (?year="{yearp}"^^xsd:int)
             }}
             """
             QR_1 = get(endpoint,query.format(yearp=year),True)
