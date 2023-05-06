@@ -9,3 +9,4 @@ __pycache__/relationalData_Manager.cpython-310.pyc
 *.jar
 blazegraph.jnl
 rules.log
+*.db

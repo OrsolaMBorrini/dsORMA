@@ -269,7 +269,7 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
                     authorURIs.update({row["orcid"]:subj})
 
         if df10_g.empty is False and df1_g.empty is False:
-            print("JSON + CSV is uploaded")
+            #print("JSON + CSV is uploaded")
 
             # make publication-author relations and publication-citations relations
             for k in pubURIs:
@@ -667,8 +667,8 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
 grp_dp = TriplestoreDataProcessor()
 grp_dp.setEndpointUrl(grp_endpoint)
-#grp_dp.uploadData("testData/graph_publications.csv")
-#grp_dp.uploadData("testData/graph_other_data.json")
+grp_dp.uploadData("testData/graph_publications.csv")
+grp_dp.uploadData("testData/graph_other_data.json")
 
 # Checking the superclass is correct or not
 # print(grp_dp.__bases__)

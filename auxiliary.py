@@ -125,9 +125,6 @@ def check_repetedDOI():
 
 
 def createPublicationObj(doi,dflst):
-    for df in dflst:
-        print(df.columns)
-        #print(df['id_doi'].isin([doi]))
     # data for general publications
     # use the id, publicationYear, title, identifiers, publicationVenue, author, cites
     # use the author constructor
