@@ -411,7 +411,6 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         GROUP BY ?ref_doi
         ORDER BY desc(?num_citations)
         limit 1
-        }}
         """
         QR_3 = get(endpoint,query,True)
         return QR_3
@@ -456,9 +455,9 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 
         SELECT ?venue
         WHERE {{
-        VALUES ?type {schema:Periodical schema:Book schema:EventSeries } 
+        VALUES ?type {{schema:Periodical schema:Book schema:EventSeries }}
         ?venue rdf:type ?type ;
-                schema:publisher ?publisher .
+               schema:identifier ?publisher .
         ?publisher schema:identifier "{orgid}"
         }}
         """
@@ -478,13 +477,12 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 
         SELECT ?id
         WHERE {{
-          VALUES ?type {schema:Periodical schema:Book schema:EventSeries } 
+          VALUES ?type {{schema:Periodical schema:Book schema:EventSeries }}
         ?publication rdf:type fabio:Expression ;
                     schema:isPartOf ?venue;
                     schema:identifier ?id.
         ?venue rdf:type ?type;
                 schema:identifier "{vid}".
-        }}
         }}
         """
         QR_6 = get(endpoint,query.format(vid = issn_isbn),True)
@@ -537,7 +535,6 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         ?venue rdf:type schema:Periodical;
                 schema:identifier "{two}".  
         }}
-        }} 
         """
         QR_8 = get(endpoint,query.format(one = volume,two = ja_id),True)
         return QR_8
@@ -595,7 +592,7 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 
         SELECT ?orcid ?firstName ?surName
         WHERE {{
-          VALUES ?type {schema:ScholarlyArticle schema:Chapter schema:ProceedingsPaper } 
+        VALUES ?type {{schema:ScholarlyArticle schema:Chapter schema:ProceedingsPaper}}
         ?publication rdf:type fabio:Expression ;
                     rdf:type ?type;
                     schema:identifier "{doiQ}";
@@ -644,7 +641,7 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 
             SELECT ?publisher ?crossref ?title
             WHERE {{
-              VALUES ?type {schema:Periodical schema:Book schema:EventSeries }
+              VALUES ?type {{schema:Periodical schema:Book schema:EventSeries }}
             ?publication rdf:type fabio:Expression ;
                         schema:identifier "{doi}";
                         schema:isPartOf ?venue.
@@ -684,8 +681,48 @@ for i in publisherURIs:
     print (i, publisherURIs[i])
 '''
 
+'''
 Q1 = grp_qp.getPublicationsPublishedInYear(2020)
-print(Q1)
+#print(Q1)
 
 Q2 = grp_qp.getPublicationsByAuthorId("0000-0003-2717-6949")
-print(Q2)
+#print(Q2)
+
+Q3 = grp_qp.getMostCitedPublication()
+#print(Q3)
+
+Q4 = grp_qp.getMostCitedVenue()
+#print(Q4)
+
+Q5 = grp_qp.getVenuesByPublisherId("crossref:286")
+print(Q5)
+
+Q6 = grp_qp.getPublicationInVenue("issn:1570-8268")
+print(Q6)
+
+Q7 = grp_qp.getJournalArticlesInIssue("3","55","issn:0219-1377")
+print(Q7)
+
+Q8 = grp_qp.getJournalArticlesInVolume("55","issn:0219-1377")
+print(Q8)
+
+Q9 = grp_qp.getJournalArticlesInJournal("issn:0219-1377")
+print(Q9)
+
+Q10 = grp_qp.getProceedingsByEvent("we_dont_have_events")
+print(Q10)
+
+Q11 = grp_qp.getPublicationAuthors("doi:10.1016/j.websem.2014.03.003")
+print(Q11)
+
+Q12 = grp_qp.getPublicationsByAuthorName("wang")
+print(Q12)
+
+Q13 = grp_qp.getDistinctPublisherOfPublications(["doi:10.1016/j.websem.2014.03.003","doi:10.1093/nar/gkz997"])
+print(Q13)
+'''
+
+'''
+Q13 = grp_qp.getPublicationsByAuthorId("0000-0003-2717-6949")
+print(Q13)
+'''

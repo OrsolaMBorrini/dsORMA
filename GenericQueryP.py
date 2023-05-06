@@ -1,5 +1,6 @@
 import pandas as pd
 import relationalData_Manager as rel
+import graphData_Manager as grp
 import ModelClasses as mdc
 
 class GenericQueryProcessor(object):
