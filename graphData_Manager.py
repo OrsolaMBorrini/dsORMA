@@ -224,7 +224,6 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
 
                     # add the URI to the URI dict
                     pubURIs.update({row["id_doi"]:subj})
-
        
         # ---------- JSON 
         elif filepath.endswith(".json"):
@@ -342,19 +341,6 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
 
         else:
             pass
-            
-        
-
-        #example
-
-        # Step-2 : iterate over the data to create triples
-            # Avoid repetition
-            #2.1 : store triples for publishers
-            #2.2 : store triples for venues
-            #2.3 : store triples for authors
-            #2.4 : store triples for JA 
-            #2.5 : store triples for BC 
-            #2.6 : store triples for PP
 
         # Step-3 : open the connection to the DB and push the triples.
 
@@ -673,6 +659,9 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
             QR_13 = pd.concat([QR_13,result_q])
         
         return QR_13
+    
+    def getcitationscount(self,doi):
+        return True
 
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
