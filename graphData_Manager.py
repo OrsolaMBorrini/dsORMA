@@ -291,9 +291,55 @@ class TriplestoreDataProcessor(TriplestoreProcessor):
                     continue
 
             # make venue-publisher relations
+            for k in venueURIs:
+                subjV = venueURIs[k]
 
-            # make venue ids triples
- 
+                for index,row in df4_g.iterrows():
+                    if row['publication_venue'] == k:
+                        triples.add((subjV,publisher,publisherURIs[row['id_crossref']]))
+                    else:
+                        continue
+                for index,row in df5_g.iterrows():
+                    if row['publication_venue'] == k:
+                        triples.add((subjV,publisher,publisherURIs[row['id_crossref']]))
+                    else:
+                        continue
+                for index,row in df6_g.iterrows():
+                    if row['publication_venue'] == k:
+                        triples.add((subjV,publisher,publisherURIs[row['id_crossref']]))
+                    else:
+                        continue
+
+                # make venue ids triples
+                for index,row in df1_g.iterrows():
+                    if row['publication_venue'] == k:
+                        # make the grouped object by doi to get all possible issn/isbn values in a single df
+                        issn_isbngrps = df8_g.groupby(['doi'])
+                        VeIDS = issn_isbngrps.get_group(row['id_doi'])
+
+                        for idx,row in VeIDS.iterrows():
+                            triples.add((subjV,id,Literal(row['issn_isbn'])))
+                
+                for index,row in df2_g.iterrows():
+                    if row['publication_venue'] == k:
+                        # make the grouped object by doi to get all possible issn/isbn values in a single df
+                        issn_isbngrps = df8_g.groupby(['doi'])
+                        VeIDS = issn_isbngrps.get_group(row['id_doi'])
+
+                        for idx,row in VeIDS.iterrows():
+                            triples.add((subjV,id,Literal(row['issn_isbn'])))
+
+                for index,row in df3_g.iterrows():
+                    if row['publication_venue'] == k:
+                        # make the grouped object by doi to get all possible issn/isbn values in a single df
+                        issn_isbngrps = df8_g.groupby(['doi'])
+                        VeIDS = issn_isbngrps.get_group(row['id_doi'])
+
+                        for idx,row in VeIDS.iterrows():
+                            triples.add((subjV,id,Literal(row['issn_isbn'])))
+
+            
+        
         else:
             pass
             
