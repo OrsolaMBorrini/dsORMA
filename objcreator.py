@@ -131,7 +131,6 @@ def createPublicationObj(doi):
                     
                     for idx,row in dflst_cit.iterrows():
                          if row['doi'] == doi:
-                            print("key is there")
                             citedDF = dflst_cit.groupby(['doi'])
                             slctDOI = citedDF.get_group(doi)
                             for idx,row in slctDOI.iterrows():
@@ -151,7 +150,7 @@ def createPublicationObj(doi):
                         if self_cit == 1:
                             cited.append(result_pub)
                             result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
-                            
+
                         pubDICT.update({doi:result_pub})
                         return result_pub
                         
