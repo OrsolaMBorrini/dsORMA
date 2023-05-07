@@ -14,13 +14,25 @@ concVEN_df = concVEN_df.rename(columns={'id_doi':'doi'})
 
 concVEN2_df = pd.concat([df8_g,df8_r])
 merged_df = pd.merge(concVEN_df, concVEN2_df, on='doi')
-print(merged_df)
-print(merged_df.columns)
+#print(merged_df)
+#print(merged_df.columns)
+
+dflst_org = pd.concat([df10_g,df10_r])
 
 def createPublisherObj(orgid):
-    return True
+    #for df in dflst_org:
+        #if orgid in df['crossref'].values:
+            for idx,row in dflst_org.iterrows():
+                if row['crossref'] == orgid:
+                    title = row['publisher']
+                    id = row['crossref']
 
-def createVenueObj(publication_venue):
+                    result_org = Organization(title,[id])
+                    # we should save the created object in a dict for future use so we dont have to create an already created
+                    # publisher object
+            return result_org
+
+def createVenueObj(publication_venue,reqType):
     grpOB = merged_df.groupby(['publication_venue'])
     req_Ven = grpOB.get_group(publication_venue)
     # there might be many issn_isbn for one single venue
@@ -39,19 +51,18 @@ def createVenueObj(publication_venue):
 
     # make the publisher obj for this venue
     pub_org = createPublisherObj(orgid)
-
-    if type == "journal" or "book":
-        result_ven = Venue(title, ids, pub_org)
+    if reqType == 'venue':
+         result_ven = Venue(title,ids,pub_org)
+         return result_ven
+    
+    if type == "journal":
+        result_ven = Journal(title, ids, pub_org)
+    elif type == "book":
+        result_ven = Book(title, ids, pub_org)
     elif type == "proceedings":
-        result_ven = Venue(title, ids, pub_org)
+        result_ven = Proceedings(event,title, ids, pub_org)
 
-    
-
-    
-
-
-
-    return True
+    return result_ven
 
 def createPublicationObj(doi):
     for df in dflst_pub:
@@ -60,7 +71,6 @@ def createPublicationObj(doi):
             id_doi = df['id_doi']
             title = df['title']
             year = df['publication_year']
-
 
         else:
             continue
@@ -75,4 +85,5 @@ def createPublicationObj(doi):
 
 #createPublicationObj(doi)
 
-createVenueObj("Accountability In Research")
+ven1 = createVenueObj("Trip to the Pork",'venue')
+print(type(ven1))
