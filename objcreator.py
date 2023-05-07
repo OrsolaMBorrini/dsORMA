@@ -79,7 +79,7 @@ def createVenueObj(publication_venue,reqType):
 
     return result_ven
 
-# WARNING - this function gave a none type error or something once, maybe needs more testing.
+# WARNING - this function gave a recursion depth type error for some DOIs.
 def createPublicationObj(doi):
     for df in dflst_pub:
         for idx,row in df.iterrows():
@@ -156,8 +156,9 @@ print("This is the publication venue of the publication",pub1.getPublicationVenu
 print("This is the authors of the publication",pub1.getAuthors())
 '''
 
-#doi:10.1016/j.websem.2021.10065
-pub2 = createPublicationObj('doi:10.1007/s10115-017-1100-y')
+# doi:10.1016/j.websem.2021.100655
+# doi:10.1007/s10115-017-1100-y
+pub2 = createPublicationObj('doi:10.1016/j.websem.2021.100655')
 print(type(pub2))
 print("This is the id of the publication \n",pub2.getIds())
 print("This is the publication year of the publication\n",pub2.getPublicationYear())
