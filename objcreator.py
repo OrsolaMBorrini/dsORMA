@@ -19,6 +19,19 @@ merged_df = pd.merge(concVEN_df, concVEN2_df, on='doi')
 
 dflst_org = pd.concat([df10_g,df10_r])
 
+dflst_aut = pd.concat([df7_g,df7_r])
+
+def createAuthorObj(orcid):
+    for idx,row in dflst_aut.iterrows():
+        if row['orcid'] == orcid:
+            nome = row['given']
+            conome = row['family']
+            orcid = row['orcid']
+
+            result_auth = Person(nome,conome,[orcid])
+
+            return result_auth
+
 def createPublisherObj(orgid):
     #for df in dflst_org:
         #if orgid in df['crossref'].values:
@@ -66,18 +79,36 @@ def createVenueObj(publication_venue,reqType):
 
 def createPublicationObj(doi):
     for df in dflst_pub:
-        if doi in df['id_doi'].values:
-            print("the doi is in the this engine")
-            id_doi = df['id_doi']
-            title = df['title']
-            year = df['publication_year']
+        for idx,row in df.iterrows():
+            if row['id_doi'] == doi:
+                    id_doi = row['id_doi']
+                    title = row['title']
+                    year = row['publication_year']
 
+                    # creating auth objects for the publication
+                    auths = []
+                    autgrp = dflst_aut.groupby(['doi'])
+                    slctauths = autgrp.get_group(doi)
+
+                    avoidauthRepetition = []
+                    for idx,rowA in slctauths.iterrows():
+                        if rowA['orcid'] not in avoidauthRepetition:
+                            avoidauthRepetition.append(rowA['orcid'])
+                            auther = createAuthorObj(rowA['orcid'])
+                            auths.append(auther)
+
+                    # creating venue objects for the publication
+                    venueOBJ = createVenueObj(row['publication_venue'],'venue')     # we need to specift what type of venue object we want
+
+                    # creating citated objects
+                    cited = []
+
+                    # creating the publicatiob object as final result
+                    result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
+                    return result_pub
+          
         else:
             continue
-        # data for general publications
-        # use the id, publicationYear, title, identifiers, publicationVenue, author, cites
-        # use the author constructor
-    return True
 
 # works but both the dbs need to be created for the import to work in the appropriate way
 #print(df1_g)
@@ -85,5 +116,17 @@ def createPublicationObj(doi):
 
 #createPublicationObj(doi)
 
-ven1 = createVenueObj("Trip to the Pork",'venue')
-print(type(ven1))
+#ven1 = createVenueObj("Trip to the Pork",'venue')
+#print(type(ven1))
+
+#pers1 = createAuthorObj("0000-0002-3938-2064")
+#print(type(pers1))
+
+pub1 = createPublicationObj('doi:10.1007/978-3-030-59621-7_2')
+print(type(pub1))
+print("This is the id of the publication \n",pub1.getIds())
+print("This is the publication year of the publication\n",pub1.getPublicationYear())
+print("This is the title of the publication",pub1.getTitle())
+print("This is the cited publications of the publication", pub1.getCitedPublications())
+print("This is the publication venue of the publication",pub1.getPublicationVenue())
+print("This is the authors of the publication",pub1.getAuthors())

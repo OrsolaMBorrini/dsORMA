@@ -127,16 +127,8 @@ def createJournalArticleObj(doi,issue,volume):
     return True
 
 
-def createAuthorObj(orcid,given,family):
-    return True
 
 
-
-
-
-def createProceedingObj():
-    # create proceddings venue object here
-    return True
 
 
 
