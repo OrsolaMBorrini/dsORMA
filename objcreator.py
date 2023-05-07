@@ -23,7 +23,19 @@ dflst_aut = pd.concat([df7_g,df7_r])
 
 dflst_cit = pd.concat([df9_g,df9_r])
 
+# object dictioneries
+authDICT = {}
+venDICT = {}
+orgDICT = {}
+pubDICT = {}
+
+JaDICT = {}
+BcDICT = {}
+PpDICT = {}
+
 def createAuthorObj(orcid):
+    if  orcid in authDICT:
+        return authDICT[orcid]
     for idx,row in dflst_aut.iterrows():
         if row['orcid'] == orcid:
             nome = row['given']
@@ -31,10 +43,12 @@ def createAuthorObj(orcid):
             orcid = row['orcid']
 
             result_auth = Person(nome,conome,[orcid])
-
+            authDICT.update({orcid:result_auth})
             return result_auth
 
 def createPublisherObj(orgid):
+            if orgid in orgDICT:
+                return orgDICT[orgid]
     #for df in dflst_org:
         #if orgid in df['crossref'].values:
             for idx,row in dflst_org.iterrows():
@@ -45,13 +59,17 @@ def createPublisherObj(orgid):
                     result_org = Organization(title,[id])
                     # we should save the created object in a dict for future use so we dont have to create an already created
                     # publisher object
+                    orgDICT.update({orgid:result_org})
             return result_org
 
 def createVenueObj(publication_venue,reqType):
+    if publication_venue in venDICT and reqType == 'venue':
+        return venDICT[publication_venue]
+
     grpOB = merged_df.groupby(['publication_venue'])
     req_Ven = grpOB.get_group(publication_venue)
     # there might be many issn_isbn for one single venue
-    print(req_Ven.head())
+    #print(req_Ven.head())
     ids = set()
     title = ""
     type = ""
@@ -68,6 +86,7 @@ def createVenueObj(publication_venue,reqType):
     pub_org = createPublisherObj(orgid)
     if reqType == 'venue':
          result_ven = Venue(title,ids,pub_org)
+         venDICT.update({publication_venue:result_ven})
          return result_ven
     
     if type == "journal":
@@ -81,6 +100,9 @@ def createVenueObj(publication_venue,reqType):
 
 # WARNING - this function gave a recursion depth type error for some DOIs.
 def createPublicationObj(doi):
+    if doi in pubDICT:
+        return pubDICT[doi]
+    
     for df in dflst_pub:
         for idx,row in df.iterrows():
             if row['id_doi'] == doi:
@@ -119,9 +141,18 @@ def createPublicationObj(doi):
                              continue
                     
                     if citedDOIS:
+                        self_cit = 0
                         for item in citedDOIS:
-                            cited.append(createPublicationObj(item)) 
+                            if item == doi:
+                                self_cit = 1
+                            else:
+                                cited.append(createPublicationObj(item)) 
                         result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
+                        if self_cit == 1:
+                            cited.append(result_pub)
+                            result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
+                            
+                        pubDICT.update({doi:result_pub})
                         return result_pub
                         
                     
@@ -129,6 +160,7 @@ def createPublicationObj(doi):
                      
                     # creating the publicatiob object as final result
                     result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
+                    pubDICT.update({doi:result_pub})
                     return result_pub
           
         else:
@@ -158,6 +190,7 @@ print("This is the authors of the publication",pub1.getAuthors())
 
 # doi:10.1016/j.websem.2021.100655
 # doi:10.1007/s10115-017-1100-y
+# doi:10.1007/s10115-019-01401-x
 pub2 = createPublicationObj('doi:10.1016/j.websem.2021.100655')
 print(type(pub2))
 print("This is the id of the publication \n",pub2.getIds())
