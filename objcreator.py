@@ -21,6 +21,8 @@ dflst_org = pd.concat([df10_g,df10_r])
 
 dflst_aut = pd.concat([df7_g,df7_r])
 
+dflst_cit = pd.concat([df9_g,df9_r])
+
 def createAuthorObj(orcid):
     for idx,row in dflst_aut.iterrows():
         if row['orcid'] == orcid:
@@ -77,6 +79,7 @@ def createVenueObj(publication_venue,reqType):
 
     return result_ven
 
+# WARNING - this function gave a none type error or something once, maybe needs more testing.
 def createPublicationObj(doi):
     for df in dflst_pub:
         for idx,row in df.iterrows():
@@ -102,7 +105,28 @@ def createPublicationObj(doi):
 
                     # creating citated objects
                     cited = []
-
+                    citedDOIS = []
+                    
+                    for idx,row in dflst_cit.iterrows():
+                         if row['doi'] == doi:
+                            print("key is there")
+                            citedDF = dflst_cit.groupby(['doi'])
+                            slctDOI = citedDF.get_group(doi)
+                            for idx,row in slctDOI.iterrows():
+                                if row['cited_doi'] not in citedDOIS:
+                                    citedDOIS.append(row['cited_doi'])
+                         else:
+                             continue
+                    
+                    if citedDOIS:
+                        for item in citedDOIS:
+                            cited.append(createPublicationObj(item)) 
+                        result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
+                        return result_pub
+                        
+                    
+                    
+                     
                     # creating the publicatiob object as final result
                     result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
                     return result_pub
@@ -121,7 +145,7 @@ def createPublicationObj(doi):
 
 #pers1 = createAuthorObj("0000-0002-3938-2064")
 #print(type(pers1))
-
+'''
 pub1 = createPublicationObj('doi:10.1007/978-3-030-59621-7_2')
 print(type(pub1))
 print("This is the id of the publication \n",pub1.getIds())
@@ -130,3 +154,19 @@ print("This is the title of the publication",pub1.getTitle())
 print("This is the cited publications of the publication", pub1.getCitedPublications())
 print("This is the publication venue of the publication",pub1.getPublicationVenue())
 print("This is the authors of the publication",pub1.getAuthors())
+'''
+
+#doi:10.1016/j.websem.2021.10065
+pub2 = createPublicationObj('doi:10.1007/s10115-017-1100-y')
+print(type(pub2))
+print("This is the id of the publication \n",pub2.getIds())
+print("This is the publication year of the publication\n",pub2.getPublicationYear())
+print("This is the title of the publication",pub2.getTitle())
+print("This is the cited publications of the publication", pub2.getCitedPublications())
+print("This is the publication venue of the publication",pub2.getPublicationVenue())
+print("This is the authors of the publication",pub2.getAuthors())
+'''
+print(df9_g)
+print(df9_r)
+print(dflst_cit)
+'''
