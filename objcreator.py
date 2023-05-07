@@ -98,7 +98,6 @@ def createVenueObj(publication_venue,reqType):
 
     return result_ven
 
-# WARNING - this function gave a recursion depth type error for some DOIs.
 def createPublicationObj(doi):
     if doi in pubDICT:
         return pubDICT[doi]
