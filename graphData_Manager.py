@@ -666,10 +666,11 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         PREFIX fabio: <http://purl.org/spar/fabio/>
 
 
-        SELECT  ?ref_doi ?cited
+        SELECT  ?doi ?cited_doi
         WHERE { 
-        ?publication schema:citation ?cited.
-        ?cited schema:identifier ?ref_doi.
+        ?publication schema:citation ?cited;
+                     schema:identifier ?doi.
+        ?cited schema:identifier ?cited_doi.
         }
             """
         QR_14 = get(endpoint,query,True)
@@ -765,5 +766,6 @@ Q13 = grp_qp.getPublicationsByAuthorId("0000-0003-2717-6949")
 print(Q13)
 '''
 
-#Q14 = grp_qp.getpubcitationscount()
+Q14 = grp_qp.getPubCitationCount()
+print(Q14)
 

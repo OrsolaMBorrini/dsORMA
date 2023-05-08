@@ -20,8 +20,8 @@ rel_dp.setDbPath(rel_path)
 rel_dp.uploadData("testData/relational_publications.csv")
 rel_dp.uploadData("testData/relational_other_data.json")
 
-print(df1_r.head())
-print(df10_r.head())
+#print(df1_r.head())
+#print(df10_r.head())
 
 # Then, create the RDF triplestore (remember first to run the
 # Blazegraph instance) using the related source data
@@ -31,8 +31,8 @@ grp_dp.setEndpointUrl(grp_endpoint)
 grp_dp.uploadData("testData/graph_publications.csv")
 grp_dp.uploadData("testData/graph_other_data.json")
 
-print(df1_g)
-print(df10_g)
+#print(df1_g)
+#print(df10_g)
 
 # In the next passage, create the query processors for both
 # the databases, using the related classes
