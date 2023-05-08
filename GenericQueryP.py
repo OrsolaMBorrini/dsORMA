@@ -75,6 +75,13 @@ class GenericQueryProcessor(object):
 
     # gq3 ---- TO DO 
     def getMostCitedPublication(self):
+        complete_result = pd.DataFrame()
+        for item in self.queryProcessor:
+            partial_result = item.getPubCitationCount()
+            complete_result = pd.concat([complete_result,partial_result])
+        
+        print(complete_result)
+
         return True # Publication
     
     # gq4 ---- TO DO 
@@ -148,3 +155,5 @@ class GenericQueryProcessor(object):
     # gq13 ---- TO DO 
     def getDistinctPublishersOfPublications(self, doiList):
         return True # list[Organisation]
+
+

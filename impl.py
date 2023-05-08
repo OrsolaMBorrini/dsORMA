@@ -47,3 +47,6 @@ grp_qp.setEndpointUrl(grp_endpoint)
 generic = GenericQueryProcessor()
 generic.addQueryProcessor(rel_qp)
 generic.addQueryProcessor(grp_qp)
+
+
+print(generic.getMostCitedPublication())

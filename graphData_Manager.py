@@ -766,7 +766,4 @@ print(Q13)
 '''
 
 #Q14 = grp_qp.getpubcitationscount()
-#print(Q14)
 
-Q15 = grp_qp.getvencitationcount()
-print(Q15)
