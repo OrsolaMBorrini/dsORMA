@@ -49,4 +49,6 @@ generic.addQueryProcessor(rel_qp)
 generic.addQueryProcessor(grp_qp)
 
 
-#print("This is the MOST CITED VENUE:\n",generic.getMostCitedVenue())
+""" mostcited_venue = generic.getMostCitedVenue()
+print("This is the MOST CITED VENUE:\n",mostcited_venue)
+print(mostcited_venue.getTitle()) """

@@ -73,7 +73,7 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
 
-    # gq3 ---- TO DO 
+    # gq3 
     def getMostCitedPublication(self):
         complete_result = pd.DataFrame()
         for item in self.queryProcessor:
@@ -89,7 +89,7 @@ class GenericQueryProcessor(object):
         grouped_citdoi = complete_result.groupby(["cited_doi"])
 
         x = 0
-        mostcited = ""
+        mostcitedPub = ""
 
         for doi in unique_citedDoi:
             df = grouped_citdoi.get_group(doi)
@@ -98,13 +98,38 @@ class GenericQueryProcessor(object):
             y = len(df.index)
             if y > x:
                 x = y
-                mostcited = doi
+                mostcitedPub = doi
         
-        return createPublicationObj(mostcited)
+        return createPublicationObj(mostcitedPub)
     
     # gq4 ---- TO DO 
     def getMostCitedVenue(self):
-        return True # Venue
+        complete_result = pd.DataFrame()
+        for item in self.queryProcessor:
+            partial_result = item.getVenCitationCount()
+            complete_result = pd.concat([complete_result,partial_result])
+        
+        # Get set of unique venue_name (column 'venue_name')
+        unique_venueName = set()
+        for idx,row in complete_result.iterrows():
+            unique_venueName.add(row['venue_name'])
+        
+        # Group by 'venue_name'
+        grouped_venueName = complete_result.groupby(["venue_name"])
+
+        x = 0
+        mostcitedVen = ""
+
+        for name in unique_venueName:
+            df = grouped_venueName.get_group(name)
+            df = df.drop_duplicates()
+            # Count number of rows for each df ( = number of citations for each venue_name)
+            y = len(df.index)
+            if y > x:
+                x = y
+                mostcitedVen = name
+        
+        return createVenueObj(mostcitedVen,"venue") # Venue
         
     # gq5 ---- TO DO 
     def getVenuesByPublisherId(self, crossref):
