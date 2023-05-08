@@ -2,7 +2,7 @@ import pandas as pd
 import relationalData_Manager as rel
 import graphData_Manager as grp
 import ModelClasses as mdc
-from auxiliary import createPublicationObj, createVenueObj
+from objcreator import createPublicationObj, createVenueObj
 
 class GenericQueryProcessor(object):
     # -- Constructor
