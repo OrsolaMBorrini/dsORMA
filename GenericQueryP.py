@@ -80,9 +80,27 @@ class GenericQueryProcessor(object):
             partial_result = item.getPubCitationCount()
             complete_result = pd.concat([complete_result,partial_result])
         
-        print(complete_result)
+        # Get set of unique cited_doi (column 'cited_doi')
+        unique_citedDoi = set()
+        for idx,row in complete_result.iterrows():
+            unique_citedDoi.add(row['cited_doi'])
+        
+        # Group by column 'cited_doi'
+        grouped_citdoi = complete_result.groupby(["cited_doi"])
 
-        return True # Publication
+        x = 0
+        mostcited = ""
+
+        for doi in unique_citedDoi:
+            df = grouped_citdoi.get_group(doi)
+            df = df.drop_duplicates()
+            # Count number of rows for each df (= number of citations for each doi)
+            y = len(df.index)
+            if y > x:
+                x = y
+                mostcited = doi
+        
+        return createPublicationObj(mostcited)
     
     # gq4 ---- TO DO 
     def getMostCitedVenue(self):

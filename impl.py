@@ -17,8 +17,8 @@ from GenericQueryP import GenericQueryProcessor
 rel_path = "relational.db"
 rel_dp = RelationalDataProcessor()
 rel_dp.setDbPath(rel_path)
-rel_dp.uploadData("testData/relational_publications.csv")
-rel_dp.uploadData("testData/relational_other_data.json")
+#rel_dp.uploadData("testData/relational_publications.csv")
+#rel_dp.uploadData("testData/relational_other_data.json")
 
 #print(df1_r.head())
 #print(df10_r.head())
@@ -28,8 +28,8 @@ rel_dp.uploadData("testData/relational_other_data.json")
 grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
 grp_dp = TriplestoreDataProcessor()
 grp_dp.setEndpointUrl(grp_endpoint)
-grp_dp.uploadData("testData/graph_publications.csv")
-grp_dp.uploadData("testData/graph_other_data.json")
+#grp_dp.uploadData("testData/graph_publications.csv")
+#grp_dp.uploadData("testData/graph_other_data.json")
 
 #print(df1_g)
 #print(df10_g)
@@ -49,4 +49,4 @@ generic.addQueryProcessor(rel_qp)
 generic.addQueryProcessor(grp_qp)
 
 
-print(generic.getMostCitedPublication())
+#print("This is the MOST CITED VENUE:\n",generic.getMostCitedVenue())

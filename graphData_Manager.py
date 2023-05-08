@@ -766,6 +766,6 @@ Q13 = grp_qp.getPublicationsByAuthorId("0000-0003-2717-6949")
 print(Q13)
 '''
 
-Q14 = grp_qp.getPubCitationCount()
-print(Q14)
+""" Q14 = grp_qp.getPubCitationCount()
+print(Q14) """
 
