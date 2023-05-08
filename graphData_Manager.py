@@ -676,28 +676,25 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         
         return QR_14
 
-    def getvencitationcount(self,ven_list):
+    def getvencitationcount(self):
         QR_15 = pd.DataFrame()
-        for item in ven_list:
-            doiURI = "<https://FF.github.io/res/publication-" + item + ">"
-            endpoint = self.getEndpointUrl()
-            doiURI = "<https://FF.github.io/res/publication-"+item+">"
-            query = """
-            PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            PREFIX schema: <https://schema.org/>
-            PREFIX fabio: <http://purl.org/spar/fabio/>
+        endpoint = self.getEndpointUrl()
+        query = """
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX schema: <https://schema.org/>
+        PREFIX fabio: <http://purl.org/spar/fabio/>
 
 
-            SELECT  ?ref_doi (COUNT({doiURI}) AS ?num_citations)
-            WHERE {{ 
-            ?publication schema:citation {doiURI}.
-            {doiURI} schema:identifier ?ref_doi.
-            }}
-        GROUP BY ?ref_doi
-        ORDER BY desc(?num_citations)
+        SELECT  ?doi ?cited_doi ?venue_name
+        WHERE { 
+        ?publication schema:citation ?cit_doi;
+                    schema:identifier ?doi.
+        ?cit_doi schema:identifier ?cited_doi;
+                schema:isPartOf ?ven.
+        ?ven schema:name ?venue_name.
+        }
             """
-        result_q = get(endpoint,query.format(doiURI=doiURI),True)
-        QR_15 = pd.concat([QR_15,result_q])
+        QR_15 = get(endpoint,query,True)
         
         return QR_15
 
@@ -768,5 +765,8 @@ Q13 = grp_qp.getPublicationsByAuthorId("0000-0003-2717-6949")
 print(Q13)
 '''
 
-Q14 = grp_qp.getpubcitationscount()
-print(Q14)
+#Q14 = grp_qp.getpubcitationscount()
+#print(Q14)
+
+Q15 = grp_qp.getvencitationcount()
+print(Q15)
