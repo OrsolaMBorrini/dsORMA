@@ -132,21 +132,41 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
     def getMostCitedPublication(self):
         with sql3.connect(self.getDbPath()) as qrdb:
             cur = qrdb.cursor()
-            query = "SELECT doi, cited_doi FROM CitationsTable"
-            cur.execute(query)
-            result = cur.fetchall() 
-            qrdb.commit()
-        return pd.DataFrame(data=result,columns=["doi","cited_doi"])
+            query1 = "SELECT cited_doi, COUNT(cited_doi) AS num_citations FROM CitationsTable GROUP BY cited_doi ORDER BY num_citations DESC"
+            cur.execute(query1)
+            result_q1 = cur.fetchall()
+            max = result_q1[0][1]
+            result1 = list()
+            for item in result_q1:
+                index = result_q1.index(item)
+                if result_q1[index][1] == max:
+                    tpl = tuple((result_q1[index][0],max))
+                    result1.append(tpl)
+            df1 = pd.DataFrame(data=result1,columns=["ref_doi","num_citations"])
+        return df1
 
     # q4
     def getMostCitedVenue(self):
         with sql3.connect(self.getDbPath()) as qrdb:
             cur = qrdb.cursor()
-            query = "SELECT doi, id_doi, publication_venue FROM JournalTable LEFT JOIN CitationsTable ON JournalTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL UNION SELECT doi, id_doi, publication_venue FROM BookTable LEFT JOIN CitationsTable ON BookTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL UNION SELECT doi, id_doi, publication_venue FROM ProceedingsTable LEFT JOIN CitationsTable ON ProceedingsTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL"
-            cur.execute(query)
-            result = cur.fetchall()            
+            query1 = "SELECT publication_venue, COUNT(publication_venue) as num_cit FROM JournalTable LEFT JOIN CitationsTable ON JournalTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL GROUP BY publication_venue UNION SELECT publication_venue, COUNT(publication_venue) as num_cit FROM BookTable LEFT JOIN CitationsTable ON BookTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL GROUP BY publication_venue UNION SELECT publication_venue, COUNT(publication_venue) as num_cit FROM ProceedingsTable LEFT JOIN CitationsTable ON ProceedingsTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL GROUP BY publication_venue ORDER BY num_cit DESC"
+            cur.execute(query1)
+            result_q1 = cur.fetchall()
+            max = result_q1[0][1]
+            result1 = list()
+            for item in result_q1:
+                index = result_q1.index(item)
+                if result_q1[index][1] == max:
+                    tpl = tuple((result_q1[index][0],max))
+                    result1.append(tpl)
+            df1 = pd.DataFrame(data=result1,columns=["publication_venue","num_cit"])
+            query2 = "SELECT issn_isbn, NULL AS event, publication_venue, id_crossref, publisher FROM VenuesIdTable LEFT JOIN JournalTable ON VenuesIdTable.doi==JournalTable.id_doi LEFT JOIN PublishersTable ON JournalTable.id_crossref==PublishersTable.crossref UNION SELECT issn_isbn, NULL AS event, publication_venue, id_crossref, publisher FROM VenuesIdTable LEFT JOIN BookTable ON VenuesIdTable.doi==BookTable.id_doi LEFT JOIN PublishersTable ON BookTable.id_crossref==PublishersTable.crossref UNION SELECT issn_isbn, event, publication_venue, id_crossref, publisher FROM VenuesIdTable LEFT JOIN ProceedingsTable ON VenuesIdTable.doi==ProceedingsTable.id_doi LEFT JOIN PublishersTable ON ProceedingsTable.id_crossref==PublishersTable.crossref"
+            cur.execute(query2)
+            result_q2 = cur.fetchall()
+            df2 = pd.DataFrame(data=result_q2, columns=["issn_isbn", "event", "publication_venue", "id_crossref", "publisher"])
+            final_result = pd.merge(left=df2, right=df1, left_on="publication_venue", right_on="publication_venue")          
             qrdb.commit()
-        return pd.DataFrame(data=result,columns=["doi","cited_doi","venue_name"])
+        return final_result
 
     # q5
     def getVenuesByPublisherId(self, crossref):
@@ -267,6 +287,25 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
             return pd.DataFrame(data=result,columns=["publisher","crossref"])
         else:
             raise Exception("The input parameter is not a list or it is not a list of strings!")
+        
+    # Additional queries
+    def getPubCitationCount(self):
+        with sql3.connect(self.getDbPath()) as qrdb:
+            cur = qrdb.cursor()
+            query = "SELECT doi, cited_doi FROM CitationsTable"
+            cur.execute(query)
+            result = cur.fetchall() 
+            qrdb.commit()
+        return pd.DataFrame(data=result,columns=["doi","cited_doi"])
+
+    def getVenCitationCount(self):
+        with sql3.connect(self.getDbPath()) as qrdb:
+            cur = qrdb.cursor()
+            query = "SELECT doi, id_doi, publication_venue FROM JournalTable LEFT JOIN CitationsTable ON JournalTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL UNION SELECT doi, id_doi, publication_venue FROM BookTable LEFT JOIN CitationsTable ON BookTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL UNION SELECT doi, id_doi, publication_venue FROM ProceedingsTable LEFT JOIN CitationsTable ON ProceedingsTable.id_doi==CitationsTable.cited_doi WHERE cited_doi IS NOT NULL"
+            cur.execute(query)
+            result = cur.fetchall()            
+            qrdb.commit()
+        return pd.DataFrame(data=result,columns=["doi","cited_doi","venue_name"])
 
         
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

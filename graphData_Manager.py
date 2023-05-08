@@ -657,7 +657,7 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         
         return QR_13
     
-    def getpubcitationscount(self):
+    def getPubCitationCount(self):
         QR_14 = pd.DataFrame()
         endpoint = self.getEndpointUrl()
         query = """
@@ -676,7 +676,7 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         
         return QR_14
 
-    def getvencitationcount(self):
+    def getVenCitationCount(self):
         QR_15 = pd.DataFrame()
         endpoint = self.getEndpointUrl()
         query = """
