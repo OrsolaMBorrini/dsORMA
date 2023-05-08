@@ -146,7 +146,7 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
             cur.execute(query)
             result = cur.fetchall()            
             qrdb.commit()
-        return pd.DataFrame(data=result,columns=["doi","cited_doi","publication_venue"])
+        return pd.DataFrame(data=result,columns=["doi","cited_doi","venue_name"])
 
     # q5
     def getVenuesByPublisherId(self, crossref):
