@@ -22,7 +22,7 @@ class GenericQueryProcessor(object):
             return "The processor added is not an instance of the class QueryProcessor", False
 
     # -- Queries
-    # g11
+    # gq1
     def getPublicationsPublishedInYear(self, year):
         if isinstance(year,int):
             complete_result = pd.DataFrame()
@@ -102,7 +102,7 @@ class GenericQueryProcessor(object):
         
         return createPublicationObj(mostcitedPub)
     
-    # gq4 ---- TO DO 
+    # gq4
     def getMostCitedVenue(self):
         complete_result = pd.DataFrame()
         for item in self.queryProcessor:
@@ -139,13 +139,22 @@ class GenericQueryProcessor(object):
                 partial_result = item.getVenuesByPublisherId(crossref)
                 complete_result = pd.concat([complete_result,partial_result])
             
-            # Should we group-by the title of the venue? and then pass "each" group-by to the createVenueObj() function?
+            # complete_result is now populated by all the results of the query for every query processor
+            result = list()   # list[Publication]
 
-            # Calling the appropriate function to create the list of Venue objects to return as result of this query
-            result = createVenueObj()    # list[Venue]
+            # Drop all duplicate values
+            ven_name = set() # unordered collection of unique elements, no worries about duplicates
+            # Scroll the complete_result dataframe
+            for idx,row in complete_result.iterrows():
+                ven_name.add(row["publication_venue"])
+
+            # Iterate over the cleaned set of publication venue names and create a Venue object for each
+            for item in ven_name:
+                # Append the Publication object to the result list
+                result.append(createVenueObj(item,"venue"))
             
-            return result
-        
+            return result #list[Venue]
+
         else:
             raise Exception("The input parameter is not a string!")
 
