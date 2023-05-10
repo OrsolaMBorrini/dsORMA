@@ -2,7 +2,7 @@ import pandas as pd
 import relationalData_Manager as rel
 import graphData_Manager as grp
 import ModelClasses as mdc
-from objcreator import createPublicationObj, createVenueObj, createAuthorObj, createPublisherObj
+from objcreator import createPublicationObj, createVenueObj, createAuthorObj, createPublisherObj, createJournalArticleObj
 
 class GenericQueryProcessor(object):
     # -- Constructor
@@ -22,7 +22,7 @@ class GenericQueryProcessor(object):
             return "The processor added is not an instance of the class QueryProcessor", False
 
     # -- Queries
-    # gq1 ---- MAY MODIFY IF createPublicationObj CHANGES INPUT PARAMETERS
+    # gq1
     def getPublicationsPublishedInYear(self, year):
         if isinstance(year,int):
             complete_result = pd.DataFrame()
@@ -51,7 +51,7 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not an integer!")
 
-    # gq2 ---- MAY MODIFY IF createPublicationObj CHANGES INPUT PARAMETERS
+    # gq2
     def getPublicationsByAuthorId(self, orcid):
         if isinstance(orcid,str):
             complete_result = pd.DataFrame()
@@ -73,7 +73,7 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
 
-    # gq3  ---- MAY MODIFY IF createPublicationObj CHANGES INPUT PARAMETERS
+    # gq3
     def getMostCitedPublication(self):
         complete_result = pd.DataFrame()
         for item in self.queryProcessor:
@@ -158,7 +158,7 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
 
-    # gq6 ---- MAY MODIFY IF createPublicationObj CHANGES INPUT PARAMETERS
+    # gq6
     def getPublicationInVenue(self, issn_isbn):
         if isinstance(issn_isbn,str):
             complete_result = pd.DataFrame()
@@ -180,7 +180,7 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
         
-    # gq7 ---- TO DO 
+    # gq7
     def getJournalArticlesInIssue(self, issue, volume, journalId):
         if isinstance(issue,str) and isinstance(volume,str) and isinstance(journalId,str):
             complete_result = pd.DataFrame()
@@ -189,21 +189,59 @@ class GenericQueryProcessor(object):
                 complete_result = pd.concat([complete_result,partial_result])
             
             result = list()
+
+            ids = set()
+            for idx,row in complete_result.iterrows():
+                ids.add(row["doi"])
+
+            for item in ids:
+                result.append(createJournalArticleObj(item))
             
-
-
-
-            return True # list[JournalArticle]
+            return result # list[JournalArticle]
         else:
             raise Exception("All or some of the input parameters are not strings!")
     
-    # gq8 ---- TO DO 
+    # gq8
     def getJournalArticlesInVolume(self, volume, journalId):
-        return True # list[JournalArticle]
+        if isinstance(volume,str) and isinstance(journalId,str):
+            complete_result = pd.DataFrame()
+            for item in self.queryProcessor:
+                partial_result = item.getJournalArticlesInVolume(volume,journalId)
+                complete_result = pd.concat([complete_result,partial_result])
+            
+            result = list()
+
+            ids = set()
+            for idx,row in complete_result.iterrows():
+                ids.add(row["doi"])
+
+            for item in ids:
+                result.append(createJournalArticleObj(item))
+            
+            return result # list[JournalArticle]
+        else:
+            raise Exception("All or some of the input parameters are not strings!")
         
-    # gq9 ---- TO DO 
+    # gq9
     def getJournalArticlesInJournal(self, journalId):
-        return True # list[JournalArticle]
+        if isinstance(journalId,str):
+            complete_result = pd.DataFrame()
+            for item in self.queryProcessor:
+                partial_result = item.getJournalArticlesInJournal(journalId)
+                complete_result = pd.concat([complete_result,partial_result])
+            
+            result = list()
+
+            ids = set()
+            for idx,row in complete_result.iterrows():
+                ids.add(row["doi"])
+
+            for item in ids:
+                result.append(createJournalArticleObj(item))
+            
+            return result # list[JournalArticle]
+        else:
+            raise Exception("The input parameter is not a string!")
         
     # gq10
     def getProceedingsByEvent(self, eventPartialName):
@@ -249,7 +287,7 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
         
-    # gq12 ---- MAY MODIFY IF createPublicationObj CHANGES INPUT PARAMETERS
+    # gq12
     def getPublicationsByAuthorName(self, authorPartialName):
         if isinstance(authorPartialName,str):
             complete_result = pd.DataFrame()
