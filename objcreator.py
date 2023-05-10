@@ -164,6 +164,78 @@ def createPublicationObj(doi):
         else:
             continue
 
+
+def createJournalArticleObj(doi):
+    if doi in JaDICT:
+        return JaDICT[doi]
+    
+    for df in dflst_pub:
+        for idx,row in df.iterrows():
+            if row['id_doi'] == doi:
+                    id_doi = row['id_doi']
+                    title = row['title']
+                    year = row['publication_year']
+
+                    if row['type'] == 'journal-article':
+                        issue_no = row['issue']
+                        vol_no = row['volume']
+
+                    # creating auth objects for the publication
+                    auths = []
+                    autgrp = dflst_aut.groupby(['doi'])
+                    slctauths = autgrp.get_group(doi)
+
+                    avoidauthRepetition = []
+                    for idx,rowA in slctauths.iterrows():
+                        if rowA['orcid'] not in avoidauthRepetition:
+                            avoidauthRepetition.append(rowA['orcid'])
+                            auther = createAuthorObj(rowA['orcid'])
+                            auths.append(auther)
+
+                    # creating venue objects for the publication
+                    venueOBJ = createVenueObj(row['publication_venue'],'venue')     # we need to specift what type of venue object we want
+
+                    # creating citated objects
+                    cited = []
+                    citedDOIS = []
+                    
+                    for idx,row in dflst_cit.iterrows():
+                         if row['doi'] == doi:
+                            citedDF = dflst_cit.groupby(['doi'])
+                            slctDOI = citedDF.get_group(doi)
+                            for idx,row in slctDOI.iterrows():
+                                if row['cited_doi'] not in citedDOIS:
+                                    citedDOIS.append(row['cited_doi'])
+                         else:
+                             continue
+                    
+                    if citedDOIS:
+                        self_cit = 0
+                        for item in citedDOIS:
+                            if item == doi:
+                                self_cit = 1
+                            else:
+                                cited.append(createPublicationObj(item))
+                        result_ja = JournalArticle(issue_no,vol_no,year,title,[id_doi],venueOBJ,auths,cited)
+                        result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
+                        if self_cit == 1:
+                            cited.append(result_pub)
+                            result_ja = JournalArticle(issue_no,vol_no,year,title,[id_doi],venueOBJ,auths,cited)
+
+                        JaDICT.update({doi:result_ja})
+                        return result_ja
+                        
+                    
+                    
+                     
+                    # creating the publicatiob object as final result
+                    result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
+                    pubDICT.update({doi:result_pub})
+                    return result_pub
+          
+        else:
+            continue
+
 # works but both the dbs need to be created for the import to work in the appropriate way
 #print(df1_g)
 #print(df1_r)
@@ -191,16 +263,16 @@ print("This is the authors of the publication",pub1.getAuthors())
 # doi:10.1007/s10115-019-01401-x
 # pub2 = createPublicationObj('doi:10.1016/j.websem.2021.100655')
 
-'''
-pub2 = createPublicationObj('doi:10.1016/j.websem.2021.100655')
+
+pub2 = createJournalArticleObj('doi:10.1016/j.websem.2021.100655')
 print(type(pub2))
 print("This is the id of the publication \n",pub2.getIds())
 print("This is the publication year of the publication\n",pub2.getPublicationYear())
 print("This is the title of the publication",pub2.getTitle())
 print("This is the cited publications of the publication", pub2.getCitedPublications())
 print("This is the publication venue of the publication",pub2.getPublicationVenue())
-print("This is the authors of the publication",pub2.getAuthors()) """
-'''
+print("This is the authors of the publication",pub2.getAuthors()) 
+
 '''
 print(df9_g)
 print(df9_r)
