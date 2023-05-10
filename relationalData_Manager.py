@@ -323,7 +323,7 @@ rel_dp.uploadData("testData/new_relational_other_data.json")
 
 rel_qp = RelationalQueryProcessor()
 rel_qp.setDbPath(rel_path)
-
+""" 
 q1 = rel_qp.getPublicationsPublishedInYear(2020)
 q2 = rel_qp.getPublicationsByAuthorId("0000-0003-0530-4305")
 q3 = rel_qp.getMostCitedPublication()
@@ -338,7 +338,7 @@ q11 = rel_qp.getPublicationAuthors("doi:10.1007/s11192-021-04097-5")
 q12 = rel_qp.getPublicationsByAuthorName("Per")
 q13 = rel_qp.getDistinctPublisherOfPublications(["doi:10.1007/978-3-030-61244-3_16","doi:10.1371/journal.pbio.3000385","doi:10.1007/s11192-018-2796-5"])
 
-print(q7)
+print(q13) """
 
 #print(q5)
 #print(q5.groupby(['publication_venue']))
