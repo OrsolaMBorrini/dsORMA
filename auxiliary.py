@@ -62,7 +62,7 @@ def readJSON(path):
 
 # !!!!! -------------------- CHANGE "id" columns to "doi" columns
 def readCSV(path):
-    D0 = pd.read_csv(path, header=0)
+    D0 = pd.read_csv(path, header=0,encoding='utf-8')
 
     # store JA_df
     filtered_df = D0.query("type == 'journal-article'")

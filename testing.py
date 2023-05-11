@@ -255,11 +255,11 @@ for item in result_q8:
     break
  """
 
-#  THIS ONE NEEDS TO BE FIXED: WHILE THE OTHER TWO QUERIES getJournalArticlesInIssue/Volume return (a list of) JournalArticle object(s), this one returns (a list of) Publication object !!
+# MANU's update - is fixed now, but please test again with some other JA id to be sure
 result_q9 = generic.getJournalArticlesInJournal("issn:0138-9130")
 """
 print("Result of query getJournalArticlesInJournal:\n",result_q9)   #  [<ModelClasses.Publication object at 0x0000021A7651EDD0>]
-print("Type:\n",type(result_q9))    
+print("Type:\n",type(result_q9))   
 for item in result_q9:
     print("This is the type of the ITEM:\n",item)   # <ModelClasses.Publication object at 0x0000021A7651EDD0>
     print("getPublicationYear:\n",item.getPublicationYear())
@@ -315,9 +315,10 @@ for item in result_q11:
     break
 """
 
-#  THIS ONE NEEDS TO BE FIXED: it returns an empty list while it should not !!!!
-result_q12 = generic.getPublicationsByAuthorName("Per")
-""" print("Result of query getPublicationsByAuthorName:\n",result_q12)
+#  Still can get stuck at max recursion !!
+result_q12 = generic.getPublicationsByAuthorName("Dennis")
+"""
+print("Result of query getPublicationsByAuthorName:\n",result_q12)
 print("Type:\n",type(result_q12))
 for item in result_q12:
     print("getPublicationYear:\n",item.getPublicationYear())

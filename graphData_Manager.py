@@ -548,18 +548,18 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         PREFIX schema: <https://schema.org/>
         PREFIX fabio: <http://purl.org/spar/fabio/>
 
-        SELECT ?id
+        SELECT ?doi
         WHERE {{
         ?publication rdf:type fabio:Expression ;
                     rdf:type schema:ScholarlyArticle;
-                    schema:identifier ?id;
+                    schema:identifier ?doi;
                     schema:volumeNumber ?vol;
                     schema:isPartOf ?venue.
         ?venue rdf:type schema:Periodical;
                 schema:identifier "{one}".  
         }}
         """
-        QR_8 = get(endpoint,query.format(one = ja_id),True)
+        QR_9 = get(endpoint,query.format(one = ja_id),True)
         return QR_9
     
     def getProceedingsByEvent(self, eventName):
@@ -615,10 +615,10 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         PREFIX schema: <https://schema.org/>
         PREFIX fabio: <http://purl.org/spar/fabio/>
 
-        SELECT ?orcid ?firstName ?surName ?id ?author
+        SELECT ?orcid ?firstName ?surName ?doi ?author
         WHERE {{
         ?publication rdf:type fabio:Expression ;
-                    schema:identifier ?id;
+                    schema:identifier ?doi;
                     schema:author ?author.
         ?author schema:identifier ?orcid;
                 schema:givenName ?firstName;

@@ -59,14 +59,14 @@ class Person(IdentifiableEntity):
         return self.familyName
 
 
-# person1 = Person("Ahsan","Syed",["Ahsa98"])
+#person1 = Person("Ahsan","Syed",["Ahsa98"])
 """ print("This is person1",person1)
 print(type(person1))
 print("This is the familyName of person1\n",person1.getFamilyName())
 print("This is the givenName of person1\n",person1.getGivenName())
 print(person1.getIds())
 """
-# person2 = Person("Francesca","Budel",["FraB99","Fra99"])
+#person2 = Person("Francesca","Budel",["FraB99","Fra99"])
 
 class Organization(IdentifiableEntity):
     # -- Constructor
@@ -81,7 +81,7 @@ class Organization(IdentifiableEntity):
         return self.name
 
 
-# org1 = Organization("The Belmeloro organization",["belm2023"])
+#org1 = Organization("The Belmeloro organization",["belm2023"])
 """
 print(org1)
 print(type(org1))
@@ -108,7 +108,7 @@ class Venue(IdentifiableEntity):
         return self.publisher
 
 
-# ven1 = Venue("Belmeloro Venue", ["belm0000", "belm1111"], org1)
+#ven1 = Venue("Belmeloro Venue", ["belm0000", "belm1111"], org1)
 """ 
 print(ven1)
 print(type(ven1))
@@ -156,15 +156,17 @@ class Publication(IdentifiableEntity):
             result.add(person)
         return result
 
-# pub1 = Publication(1963, "The Name of the Rose", ["abc1001","cba1001"], ven1,[person1,person2],[])
-""" print(pub1)
+#pub1 = Publication(1963, "The Name of the Rose", ["abc1001","cba1001"], ven1,[person1,person2],[])
+'''
+print(pub1)
 print(type(pub1))
+print(pub1.getIds())
 print("This is the publication year of the publication\n",pub1.getPublicationYear())
 print("This is the title of the publication",pub1.getTitle())
 print("This is the cited publications of the publication", pub1.getCitedPublications())
 print("This is the publication venue of the publication",pub1.getPublicationVenue())
 print("This is the authors of the publication",pub1.getAuthors())
-"""
+'''
 
 class JournalArticle(Publication):
     # -- Constructor

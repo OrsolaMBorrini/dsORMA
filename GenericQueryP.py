@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import relationalData_Manager as rel
 import graphData_Manager as grp
 import ModelClasses as mdc
@@ -236,6 +237,7 @@ class GenericQueryProcessor(object):
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
 
+
             for item in ids:
                 result.append(createJournalArticleObj(item))
             
@@ -292,7 +294,7 @@ class GenericQueryProcessor(object):
         if isinstance(authorPartialName,str):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
-                partial_result = item.getProceedingsByEvent(authorPartialName)
+                partial_result = item.getPublicationsByAuthorName(authorPartialName)
                 complete_result = pd.concat([complete_result,partial_result])
 
             result = list()
