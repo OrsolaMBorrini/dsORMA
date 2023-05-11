@@ -263,7 +263,7 @@ print("This is the authors of the publication",pub1.getAuthors())
 # doi:10.1007/s10115-019-01401-x
 # pub2 = createPublicationObj('doi:10.1016/j.websem.2021.100655')
 
-
+'''
 pub2 = createJournalArticleObj('doi:10.1016/j.websem.2021.100655')
 print(type(pub2))
 print("This is the id of the publication \n",pub2.getIds())
@@ -273,7 +273,6 @@ print("This is the cited publications of the publication", pub2.getCitedPublicat
 print("This is the publication venue of the publication",pub2.getPublicationVenue())
 print("This is the authors of the publication",pub2.getAuthors()) 
 
-'''
 print(df9_g)
 print(df9_r)
 print(dflst_cit)

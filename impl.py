@@ -15,8 +15,8 @@ from GenericQueryP import GenericQueryProcessor
 rel_path = "relational.db"
 rel_dp = RelationalDataProcessor()
 rel_dp.setDbPath(rel_path)
-#rel_dp.uploadData("testData/relational_publications.csv")
-#rel_dp.uploadData("testData/relational_other_data.json")
+rel_dp.uploadData("testData/relational_publications.csv")
+rel_dp.uploadData("testData/relational_other_data.json")
 
 
 # Then, create the RDF triplestore (remember first to run the
@@ -24,8 +24,8 @@ rel_dp.setDbPath(rel_path)
 grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
 grp_dp = TriplestoreDataProcessor()
 grp_dp.setEndpointUrl(grp_endpoint)
-#grp_dp.uploadData("testData/graph_publications.csv")
-#grp_dp.uploadData("testData/graph_other_data.json")
+grp_dp.uploadData("testData/graph_publications.csv")
+grp_dp.uploadData("testData/graph_other_data.json")
 
 
 # In the next passage, create the query processors for both
@@ -41,8 +41,3 @@ grp_qp.setEndpointUrl(grp_endpoint)
 generic = GenericQueryProcessor()
 generic.addQueryProcessor(rel_qp)
 generic.addQueryProcessor(grp_qp)
-
-
-""" mostcited_venue = generic.getMostCitedVenue()
-print("This is the MOST CITED VENUE:\n",mostcited_venue)
-print(mostcited_venue.getTitle()) """

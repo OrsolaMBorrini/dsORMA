@@ -273,7 +273,7 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
             raise Exception("The input parameter is not a string!")
 
     # q13
-    def getDistinctPublisherOfPublications(self, doiList):
+    def getDistinctPublishersOfPublications(self, doiList):
         if isinstance(doiList,list) and all(isinstance(n, str) for n in doiList):
             with sql3.connect(self.getDbPath()) as qrdb:
                 cur = qrdb.cursor()
@@ -336,11 +336,8 @@ q9 = rel_qp.getJournalArticlesInJournal("issn:0138-9130")
 q10 = rel_qp.getProceedingsByEvent("arz")
 q11 = rel_qp.getPublicationAuthors("doi:10.1007/s11192-021-04097-5")
 q12 = rel_qp.getPublicationsByAuthorName("Per")
-q13 = rel_qp.getDistinctPublisherOfPublications(["doi:10.1007/978-3-030-61244-3_16","doi:10.1371/journal.pbio.3000385","doi:10.1007/s11192-018-2796-5"])
+q13 = rel_qp.getDistinctPublishersOfPublications(["doi:10.1007/978-3-030-61244-3_16","doi:10.1371/journal.pbio.3000385","doi:10.1007/s11192-018-2796-5"])
  """
-
-#print(q5)
-#print(q5.groupby(['publication_venue']))
 
 # Checking the superclass is correct or not
 # print(rel_qp.__bases__) """

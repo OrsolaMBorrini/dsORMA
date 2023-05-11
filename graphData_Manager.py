@@ -629,7 +629,7 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         QR_12 = get(endpoint,query.format(nome=authorName),True)
         return QR_12
     
-    def getDistinctPublisherOfPublications(self, doi_list):
+    def getDistinctPublishersOfPublications(self, doi_list):
         QR_13 = pd.DataFrame()
         for item in doi_list:
             endpoint = self.getEndpointUrl()

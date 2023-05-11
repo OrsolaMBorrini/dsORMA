@@ -311,7 +311,7 @@ class GenericQueryProcessor(object):
         
     # gq13
     def getDistinctPublishersOfPublications(self, doiList):
-        if all(isinstance(n, int) for n in doiList):
+        if all(isinstance(n, str) for n in doiList):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getDistinctPublishersOfPublications(doiList)
