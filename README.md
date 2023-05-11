@@ -8,8 +8,8 @@ The goal of the project is to develop a software that enables one to process dat
 Please use the `impl.py` file to use the software in the best possible manner. It includes all the classes and functions required for the optimal functioning of the software.
 
 ## Disclaimer
-While this repository still contains some parts of the [previous code](https://github.com/F4NT4STIC-4/f4_dataScience) developed for the project, issues and mistakes were corrected by the two contributors.
+The `main` branch of this repository contains the new code for the project, while the `old-stuff` branch contains the previous version (stemming from the [first version](https://github.com/F4NT4STIC-4/f4_dataScience)). The current code has been rebuilt from scratch almost completely by the two contributors.
 
-## Contributors
-- [Manu Srivastava](mailto:manu.srivastava@studio.unibo.it) - solved issues regarding: TriplestoreDataProcessor, TriplestoreProcessor, TriplestoreQueryProcessor, and GenericQueryProcessor (main attributes and half of the methods)
-- [Orsola Maria Borrini](mailto:orsolamaria.borrini@studio.unibo.it) - solved issues regarding: RelationalQueryProcessor, GenericQueryProcessor, and general debugging
+## Contributors and statement of responsibility 
+- [Manu Srivastava](mailto:manu.srivastava@studio.unibo.it) - `graphData_Manager.py`, `objcreator.py`, `auxiliary.py`, `GenericQueryP.py`
+- [Orsola Maria Borrini](mailto:orsolamaria.borrini@studio.unibo.it) - `ModelClasses.py`, `relationalData_Manager.py`, `auxiliary.py`, `GenericQueryP.py`
