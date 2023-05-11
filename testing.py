@@ -255,20 +255,18 @@ for item in result_q8:
     break
  """
 
-# MANU's update - is fixed now, but please test again with some other JA id to be sure
-result_q9 = generic.getJournalArticlesInJournal("issn:0138-9130")
-"""
-print("Result of query getJournalArticlesInJournal:\n",result_q9)   #  [<ModelClasses.Publication object at 0x0000021A7651EDD0>]
+result_q9 = generic.getJournalArticlesInJournal("issn:2514-9288")
+""" print("Result of query getJournalArticlesInJournal:\n",result_q9)
 print("Type:\n",type(result_q9))   
 for item in result_q9:
-    print("This is the type of the ITEM:\n",item)   # <ModelClasses.Publication object at 0x0000021A7651EDD0>
+    print("This is the type of the ITEM:\n",item)
     print("getPublicationYear:\n",item.getPublicationYear())
     print("getTitle:\n",item.getTitle())
     print("getCitedPublications:\n",item.getCitedPublications())
     print("getPublicationVenue:\n",item.getPublicationVenue())
     print("getAuthors:\n",item.getAuthors())
     print("getIds:\n",item.getIds())
-    print("getIssue:\n",item.getIssue())    # AttributeError: 'Publication' object has no attribute 'getIssue'
+    print("getIssue:\n",item.getIssue())
     print("getVolume:\n",item.getVolume())
     # ---- Additional second-level queries
     for pub in item.getCitedPublications():
@@ -278,16 +276,17 @@ for item in result_q9:
         print("getCitedPublications().getPublicationVenue():\n",pub.getPublicationVenue())
         print("getCitedPublications().getAuthors():\n",pub.getAuthors())
         break
-    print("getPublicationVenue().getTitle()",item.getPublicationVenue().getTitle())
-    print("getPublicationVenue().getPublisher()",item.getPublicationVenue().getPublisher())
-    print("getPublicationVenue().getIds()",item.getPublicationVenue().getIds())
+    for venue in item.getPublicationVenue():
+        print("getPublicationVenue().getTitle()",venue.getTitle())
+        print("getPublicationVenue().getPublisher()",venue.getPublisher())
+        print("getPublicationVenue().getIds()",venue.getIds())
     for author in item.getAuthors():
         print("getAuthors().getGivenName()",author.getGivenName())
         print("getAuthors().getFamilyName()",author.getFamilyName())
         print("getAuthors().getIds()",author.getIds())
         break
     break
-"""
+ """
 
 result_q10 = generic.getProceedingsByEvent("ffic")
 """ print("Result of query getProceedingsByEvent:\n",result_q10)
