@@ -11,5 +11,5 @@ Please use the `impl.py` file to use the software in the best possible manner. I
 The `main` branch of this repository contains the new code for the project, while the `old-stuff` branch contains the previous version (stemming from the [first version](https://github.com/F4NT4STIC-4/f4_dataScience)). The current code has been rebuilt from scratch almost completely by the two contributors.
 
 ## Contributors and statement of responsibility 
-- [Manu Srivastava](mailto:manu.srivastava@studio.unibo.it) - `graphData_Manager.py`, `objcreator.py`, `auxiliary.py`, `GenericQueryP.py`
-- [Orsola Maria Borrini](mailto:orsolamaria.borrini@studio.unibo.it) - `ModelClasses.py`, `relationalData_Manager.py`, `auxiliary.py`, `GenericQueryP.py`
+- [Manu Srivastava](mailto:manu.srivastava@studio.unibo.it) - `graphData_Manager.py`, `objcreator.py`, `auxiliary.py`, `GenericQueryP.py`, testing and debugging
+- [Orsola Maria Borrini](mailto:orsolamaria.borrini@studio.unibo.it) - `ModelClasses.py`, `relationalData_Manager.py`, `auxiliary.py`, `GenericQueryP.py`, testing and debugging
