@@ -46,8 +46,8 @@ generic.addQueryProcessor(grp_qp)
 
 # --------- TESTING ON SOME VARIABLES THE GENERIC QUERIES
 
-result_q1 = generic.getPublicationsPublishedInYear(2020)
-""" 
+#result_q1 = generic.getPublicationsPublishedInYear(2020)
+"""
 print("Result of query getPublicationsPublishedInYear:\n",result_q1)    # list[Publication]
 print("Type:\n",type(result_q1))    #  <class 'list'>
 for item in result_q1:
@@ -65,20 +65,22 @@ for item in result_q1:
         print("getCitedPublications().getPublicationVenue():\n",pub.getPublicationVenue())
         print("getCitedPublications().getAuthors():\n",pub.getAuthors())
         break
-    print("getPublicationVenue().getTitle()",item.getPublicationVenue().getTitle()) # str
-    print("getPublicationVenue().getPublisher()",item.getPublicationVenue().getPublisher()) # <ModelClasses.Organization object at 0x000001570D0357E0> 
-    print("getPublicationVenue().getIds()",item.getPublicationVenue().getIds()) # ['issn:1471-244X']
+    if isinstance(item.getPublicationVenue(), type(None)):
+        pass
+    else:    
+        print("getPublicationVenue().getTitle()",item.getPublicationVenue().getTitle()) # str
+        print("getPublicationVenue().getPublisher()",item.getPublicationVenue().getPublisher()) # <ModelClasses.Organization object at 0x000001570D0357E0> 
+        print("getPublicationVenue().getIds()",item.getPublicationVenue().getIds()) # ['issn:1471-244X']
     for author in item.getAuthors():
         print("getAuthors().getGivenName()",author.getGivenName())  # str
         print("getAuthors().getFamilyName()",author.getFamilyName())    # str
         print("getAuthors().getIds()",author.getIds())  # ['0000-0001-7412-4776']
-        break
+        #break
     break
 """
 
-result_q2 = generic.getPublicationsByAuthorId("0000-0001-9857-1511")
-"""
-print("Result of query getPublicationsByAuthorId:\n",result_q2)
+#result_q2 = generic.getPublicationsByAuthorId("0000-0003-0530-4305")
+"""print("Result of query getPublicationsByAuthorId:\n",result_q2)
 print("Type:\n",type(result_q2))
 for item in result_q2:
     print("getPublicationYear:\n",item.getPublicationYear())
@@ -95,18 +97,21 @@ for item in result_q2:
         print("getCitedPublications().getPublicationVenue():\n",pub.getPublicationVenue())
         print("getCitedPublications().getAuthors():\n",pub.getAuthors())
         break
-    print("getPublicationVenue().getTitle()",item.getPublicationVenue().getTitle())
-    print("getPublicationVenue().getPublisher()",item.getPublicationVenue().getPublisher())
-    print("getPublicationVenue().getIds()",item.getPublicationVenue().getIds())
+    if isinstance(item.getPublicationVenue(), type(None)):
+        pass
+    else:
+        print("getPublicationVenue().getTitle()",item.getPublicationVenue().getTitle())
+        print("getPublicationVenue().getPublisher()",item.getPublicationVenue().getPublisher())
+        print("getPublicationVenue().getIds()",item.getPublicationVenue().getIds())
     for author in item.getAuthors():
         print("getAuthors().getGivenName()",author.getGivenName())
         print("getAuthors().getFamilyName()",author.getFamilyName())
         print("getAuthors().getIds()",author.getIds())
-        break
-    break
-"""
+        #break
+    break"""
 
-result_q3 = generic.getMostCitedPublication()
+
+#result_q3 = generic.getMostCitedPublication()
 """ print("Result of query getMostCitedPublication:\n",result_q3)
 print("Type:\n",type(result_q3))
 print("getPublicationYear:\n",result_q3.getPublicationYear())
@@ -134,9 +139,8 @@ for author in result_q3.getAuthors():
 """
 
 
-result_q4 = generic.getMostCitedVenue()
-"""
-print("Result of query getMostCitedVenue:\n",result_q4)
+#result_q4 = generic.getMostCitedVenue()
+""" print("Result of query getMostCitedVenue:\n",result_q4)
 print("Type:\n",type(result_q4))
 print("getTitle:\n",result_q4.getTitle())
 print("getPublisher:\n",result_q4.getPublisher())
@@ -147,23 +151,22 @@ print("getPublisher().getName():\n",result_q4.getPublisher().getName())
 """
 
 
-result_q5 = generic.getVenuesByPublisherId("crossref:286")
-""" 
-print("Result of query getVenuesByPublisherId:\n",result_q5)   # list[Venue]
+#result_q5 = generic.getVenuesByPublisherId("crossref:311")
+"""print("Result of query getVenuesByPublisherId:\n",result_q5)   # list[Venue]
 print("Type:\n",type(result_q5))   #  <class 'list'>
 for item in result_q5:
-    print("getTitle:\n",item.getTitle())
-    print("getPublisher:\n",item.getPublisher())
-    print("getIds:\n",item.getIds())
-    # ---- Additional second-level queries
-    print("getPublisher().getIds():\n",item.getPublisher().getIds())
-    print("getPublisher().getName():\n",item.getPublisher().getName())
-    break
+    if pd.isna(item.getTitle()):
+        print("getTitle:\n",item.getTitle())
+        print("getPublisher:\n",item.getPublisher())
+        print("getIds:\n",item.getIds())
+        # ---- Additional second-level queries
+        print("getPublisher().getIds():\n",item.getPublisher().getIds())
+        print("getPublisher().getName():\n",item.getPublisher().getName())
+        #break
 """
 
-result_q6 = generic.getPublicationInVenue("issn:0138-9130")
-"""
-print("Result of query getPublicationInVenue:\n",result_q6)
+#result_q6 = generic.getPublicationInVenue("issn:0138-9130")
+""" print("Result of query getPublicationInVenue:\n",result_q6)
 print("Type:\n",type(result_q6))
 for item in result_q6:
     print("getPublicationYear:\n",item.getPublicationYear())
@@ -191,9 +194,8 @@ for item in result_q6:
     break
  """
 
-result_q7 = generic.getJournalArticlesInIssue("1","1","issn:2641-3337")
-"""
-print("Result of query getJournalArticlesInIssue:\n",result_q7)
+#result_q7 = generic.getJournalArticlesInIssue("1","1","issn:2641-3337")
+""" print("Result of query getJournalArticlesInIssue:\n",result_q7)
 print("Type:\n",type(result_q7))
 for item in result_q7:
     print("getPublicationYear:\n",item.getPublicationYear())
@@ -223,8 +225,9 @@ for item in result_q7:
     break
 """
 
-result_q8 = generic.getJournalArticlesInVolume("72","issn:1022-2588")
-""" print("Result of query getJournalArticlesInVolume:\n",result_q8)    # [<ModelClasses.JournalArticle object at 0x000001EC2A027B80>]
+#result_q8 = generic.getJournalArticlesInVolume("72","issn:1022-2588")
+"""
+print("Result of query getJournalArticlesInVolume:\n",result_q8)    # [<ModelClasses.JournalArticle object at 0x000001EC2A027B80>]
 print("Type:\n",type(result_q8))
 for item in result_q8:
     print("This is the type of the ITEM:\n",item)   # <ModelClasses.JournalArticle object at 0x000001EC2A027B80>
@@ -244,18 +247,21 @@ for item in result_q8:
         print("getCitedPublications().getPublicationVenue():\n",pub.getPublicationVenue())
         print("getCitedPublications().getAuthors():\n",pub.getAuthors())
         break
-    print("getPublicationVenue().getTitle()",item.getPublicationVenue().getTitle())
-    print("getPublicationVenue().getPublisher()",item.getPublicationVenue().getPublisher())
-    print("getPublicationVenue().getIds()",item.getPublicationVenue().getIds())
+    if isinstance(item.getPublicationVenue(), type(None)):
+        pass
+    else:
+        print("getPublicationVenue().getTitle()",item.getPublicationVenue().getTitle())
+        print("getPublicationVenue().getPublisher()",item.getPublicationVenue().getPublisher())
+        print("getPublicationVenue().getIds()",item.getPublicationVenue().getIds())
     for author in item.getAuthors():
         print("getAuthors().getGivenName()",author.getGivenName())
         print("getAuthors().getFamilyName()",author.getFamilyName())
         print("getAuthors().getIds()",author.getIds())
         break
     break
- """
+"""
 
-result_q9 = generic.getJournalArticlesInJournal("issn:2514-9288")
+#result_q9 = generic.getJournalArticlesInJournal("issn:2514-9288")
 """ print("Result of query getJournalArticlesInJournal:\n",result_q9)
 print("Type:\n",type(result_q9))   
 for item in result_q9:
@@ -288,7 +294,7 @@ for item in result_q9:
     break
  """
 
-result_q10 = generic.getProceedingsByEvent("ffic")
+#result_q10 = generic.getProceedingsByEvent("ffic")
 """ print("Result of query getProceedingsByEvent:\n",result_q10)
 print("Type:\n",type(result_q10))
 for item in result_q10:
@@ -303,7 +309,7 @@ for item in result_q10:
  """
 
 
-result_q11 = generic.getPublicationAuthors("doi:10.1007/978-3-030-71903-6_32")
+#result_q11 = generic.getPublicationAuthors("doi:10.1108/dta-10-2017-0078")
 """
 print("Result of query getPublicationAuthors:\n",result_q11)
 print("Type:\n",type(result_q11))
@@ -315,7 +321,7 @@ for item in result_q11:
 """
 
 #  Still can get stuck at max recursion !!
-result_q12 = generic.getPublicationsByAuthorName("Dennis")
+#result_q12 = generic.getPublicationsByAuthorName("per")
 """
 print("Result of query getPublicationsByAuthorName:\n",result_q12)
 print("Type:\n",type(result_q12))
@@ -345,7 +351,7 @@ for item in result_q12:
     break
 """
 
-result_q13 = generic.getDistinctPublishersOfPublications(["doi:10.1007/978-3-030-71903-6_32","doi:10.1007/s11192-016-2215-8"])
+#result_q13 = generic.getDistinctPublishersOfPublications(["doi:10.1007/978-3-030-71903-6_32","doi:10.1007/s11192-016-2215-8","doi:10.1108/dta-10-2017-0078"])
 """ print("Result of query getDistinctPublishersOfPublications:\n",result_q13)
 print("Type:\n",type(result_q13))
 for item in result_q13:

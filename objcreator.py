@@ -5,6 +5,12 @@ import numpy as np
 import pandas as pd
 from ModelClasses import *
 
+import sys
+import resource
+
+#sys.setrecursionlimit(10**6)
+#resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+
 #doi = "doi:10.1016/j.websem.2021.100655"
 dflst_pub = [df1_g,df2_g,df3_g,df1_r,df2_r,df3_r]
 dflst_ven = [df4_g,df5_g,df6_g,df4_r,df5_r,df6_r]
@@ -126,7 +132,7 @@ def createPublicationObj(doi):
                     # some dois might not have any venue and are thus nan
                     # so we send an empty venue object for that
                     if (row['publication_venue']) == np.nan or np.NAN:
-                        venueOBJ = []
+                        venueOBJ = None
                     else:
                         print(row['publication_venue'])
                         venueOBJ = createVenueObj(row['publication_venue'],'venue')     # we need to specift what type of venue object we want
@@ -159,8 +165,6 @@ def createPublicationObj(doi):
 
                         pubDICT.update({doi:result_pub})
                         return result_pub
-                        
-                    
                     
                      
                     # creating the publicatiob object as final result
@@ -170,6 +174,7 @@ def createPublicationObj(doi):
           
         else:
             continue
+    
 
 def createJournalArticleObj(doi):
     if doi in JaDICT:

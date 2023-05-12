@@ -23,25 +23,26 @@ class GenericQueryProcessor(object):
             return "The processor added is not an instance of the class QueryProcessor", False
 
     # -- Queries
-    # gq1
+    # gq1 + merged DF is OK
     def getPublicationsPublishedInYear(self, year):
         if isinstance(year,int):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 # For every query processor added to the generic query processor, call the query
                 partial_result = item.getPublicationsPublishedInYear(year)
+                #print(partial_result)
                 # Concatenate the result of this query (type DataFrame) to the empty df outside of the for-in cycle to *save* the result
                 complete_result = pd.concat([complete_result,partial_result])
             
             # complete_result is now populated by all the results of the query for every query processor
             result = list()   # list[Publication]
-
+            #print(complete_result)
             # Drop all duplicate values
             ids = set() # unordered collection of unique elements, no worries about duplicates
             # Scroll the complete_result dataframe
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
-
+            #print(ids)
             # Iterate over the cleaned set of DOIs and create a Publication object for each
             for item in ids:
                 # Append the Publication object to the result list
@@ -52,21 +53,22 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not an integer!")
 
-    # gq2
+    # gq2 + merged DF is OK
     def getPublicationsByAuthorId(self, orcid):
         if isinstance(orcid,str):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getPublicationsByAuthorId(orcid)
+                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result]) 
             
             result = list()   # list[Publication]
-
+            #print(complete_result)
             # Drop duplicate ids
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
-
+            #print(ids)
             for item in ids:
                 result.append(createPublicationObj(item))
             
@@ -74,7 +76,7 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
 
-    # gq3
+    # gq3 + merged DF checked in Sarzanello
     def getMostCitedPublication(self):
         complete_result = pd.DataFrame()
         for item in self.queryProcessor:
@@ -103,7 +105,7 @@ class GenericQueryProcessor(object):
         
         return createPublicationObj(mostcitedPub)
     
-    # gq4
+    # gq4 + merged DF checked in Sarzanello
     def getMostCitedVenue(self):
         complete_result = pd.DataFrame()
         for item in self.queryProcessor:
@@ -132,23 +134,24 @@ class GenericQueryProcessor(object):
         
         return createVenueObj(mostcitedVen,"venue") # Venue
         
-    # gq5
+    # gq5 + merged DF is OK
     def getVenuesByPublisherId(self, crossref):
         if isinstance(crossref,str):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getVenuesByPublisherId(crossref)
+                print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             # complete_result is now populated by all the results of the query for every query processor
             result = list()   # list[Publication]
-
+            print(complete_result)
             # Drop all duplicate values
             ven_name = set() # unordered collection of unique elements, no worries about duplicates
             # Scroll the complete_result dataframe
             for idx,row in complete_result.iterrows():
                 ven_name.add(row["publication_venue"])
-
+            print(ven_name)
             # Iterate over the cleaned set of publication venue names and create a Venue object for each
             for item in ven_name:
                 # Append the Publication object to the result list
@@ -159,21 +162,22 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
 
-    # gq6
+    # gq6 + merged DF is OK
     def getPublicationInVenue(self, issn_isbn):
         if isinstance(issn_isbn,str):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getPublicationInVenue(issn_isbn)
+                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result]) 
             
             result = list()   # list[Publication]
-
+            #print(complete_result)
             # Drop duplicate ids
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
-
+            #print(ids)
             for item in ids:
                 result.append(createPublicationObj(item))
             
@@ -181,16 +185,17 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
         
-    # gq7
+    # gq7 + merged DF is OK
     def getJournalArticlesInIssue(self, issue, volume, journalId):
         if isinstance(issue,str) and isinstance(volume,str) and isinstance(journalId,str):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getJournalArticlesInIssue(issue,volume,journalId)
+                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             result = list()
-
+            #print(complete_result)
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
@@ -202,16 +207,17 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("All or some of the input parameters are not strings!")
     
-    # gq8
+    # gq8 + merged DF is OK
     def getJournalArticlesInVolume(self, volume, journalId):
         if isinstance(volume,str) and isinstance(journalId,str):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getJournalArticlesInVolume(volume,journalId)
+                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             result = list()
-
+            #print(complete_result)
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
@@ -223,21 +229,22 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("All or some of the input parameters are not strings!")
         
-    # gq9
+    # gq9 + merged DF is OK
     def getJournalArticlesInJournal(self, journalId):
         if isinstance(journalId,str):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getJournalArticlesInJournal(journalId)
+                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             result = list()
-
+            #print(complete_result)
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
 
-
+            #print(ids)
             for item in ids:
                 result.append(createJournalArticleObj(item))
             
@@ -245,12 +252,13 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
         
-    # gq10
+    # gq10 + merged DF is OK
     def getProceedingsByEvent(self, eventPartialName):
         if isinstance(eventPartialName,str):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getProceedingsByEvent(eventPartialName)
+                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
 
             result = list()
@@ -258,7 +266,7 @@ class GenericQueryProcessor(object):
             ven_name = set()
             for idx,row in complete_result.iterrows():
                 ven_name.add(row["publication_venue"])
-            
+            #print(ven_name)
             for item in ven_name:
                 result.append(createVenueObj(item,"proceedings"))
 
@@ -267,20 +275,21 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
                 
-    # gq11
+    # gq11 + merged DF is OK
     def getPublicationAuthors(self, doi):
         if isinstance(doi,str):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getPublicationAuthors(doi)
+                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
 
             result = list()
-
+            #print(complete_result)
             orcid = set()
             for idx,row in complete_result.iterrows():
                 orcid.add(row["orcid"])
-
+            #print(orcid)
             for item in orcid:
                 result.append(createAuthorObj(item))
             
@@ -289,20 +298,21 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
         
-    # gq12
+    # gq12 + merged DF is OK
     def getPublicationsByAuthorName(self, authorPartialName):
         if isinstance(authorPartialName,str):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getPublicationsByAuthorName(authorPartialName)
+                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
 
             result = list()
-            
+            #print(complete_result)
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
-
+            #print(ids)
             for item in ids:
                 result.append(createPublicationObj(item))
 
@@ -311,20 +321,21 @@ class GenericQueryProcessor(object):
         else:
             raise Exception("The input parameter is not a string!")
         
-    # gq13
+    # gq13 + merged DF is OK
     def getDistinctPublishersOfPublications(self, doiList):
         if all(isinstance(n, str) for n in doiList):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getDistinctPublishersOfPublications(doiList)
+                print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             result = list()
-
+            print(complete_result)
             crossrefs = set()
             for idx,row in complete_result.iterrows():
                 crossrefs.add(row["crossref"])
-            
+            print(crossrefs)
             for item in crossrefs:
                 result.append(createPublisherObj(item))
 

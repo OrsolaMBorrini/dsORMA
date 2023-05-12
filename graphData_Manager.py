@@ -364,9 +364,10 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
             PREFIX fabio: <http://purl.org/spar/fabio/>
             PREFIX dbpedia: <https://dbpedia.org/ontology/>
 
-            SELECT ?publication1 ?year
+            SELECT ?doi 
             WHERE {{
             ?publication1 rdf:type fabio:Expression;
+                            schema:identifier ?doi;
                             dbpedia:year ?year.  
             FILTER (?year="{yearp}"^^xsd:int)
             }}
@@ -384,9 +385,10 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         PREFIX schema: <https://schema.org/>
         PREFIX fabio: <http://purl.org/spar/fabio/>
 
-        SELECT ?publication 
+        SELECT ?doi 
         WHERE {{
         ?publication rdf:type fabio:Expression ;
+                    schema:identifier ?doi;
                     schema:author ?author .
         ?author schema:identifier "{orcido}"
         }}
@@ -453,11 +455,12 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         PREFIX schema: <https://schema.org/>
         PREFIX fabio: <http://purl.org/spar/fabio/>
 
-        SELECT ?venue
+        SELECT ?publication_venue
         WHERE {{
         VALUES ?type {{schema:Periodical schema:Book schema:EventSeries }}
         ?venue rdf:type ?type ;
-               schema:identifier ?publisher .
+                schema:name ?publication_venue;
+               schema:publisher ?publisher .
         ?publisher schema:identifier "{orgid}"
         }}
         """
@@ -475,12 +478,12 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         PREFIX schema: <https://schema.org/>
         PREFIX fabio: <http://purl.org/spar/fabio/>
 
-        SELECT ?id
+        SELECT ?doi
         WHERE {{
           VALUES ?type {{schema:Periodical schema:Book schema:EventSeries }}
         ?publication rdf:type fabio:Expression ;
                     schema:isPartOf ?venue;
-                    schema:identifier ?id.
+                    schema:identifier ?doi.
         ?venue rdf:type ?type;
                 schema:identifier "{vid}".
         }}
@@ -497,11 +500,11 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         PREFIX schema: <https://schema.org/>
         PREFIX fabio: <http://purl.org/spar/fabio/>
 
-        SELECT ?id ?publication
+        SELECT ?doi
         WHERE {{
         ?publication rdf:type fabio:Expression ;
                     rdf:type schema:ScholarlyArticle;
-                    schema:identifier ?id;
+                    schema:identifier ?doi;
                     schema:issueNumber "{one}";
                     schema:volumeNumber "{two}";
                     schema:isPartOf ?venue.
@@ -525,11 +528,11 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         PREFIX schema: <https://schema.org/>
         PREFIX fabio: <http://purl.org/spar/fabio/>
 
-        SELECT ?id
+        SELECT ?doi
         WHERE {{
         ?publication rdf:type fabio:Expression ;
                     rdf:type schema:ScholarlyArticle;
-                    schema:identifier ?id;
+                    schema:identifier ?doi;
                     schema:volumeNumber "{one}";
                     schema:isPartOf ?venue.
         ?venue rdf:type schema:Periodical;
@@ -571,11 +574,12 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
                 PREFIX schema: <https://schema.org/>
                 PREFIX fabio: <http://purl.org/spar/fabio/>
                 PREFIX dcterm: <http://purl.org/dc/terms/>
-                select ?s ?n
+                select ?publication_venue ?event
                 where{{
                 ?s rdf:type fabio:ProceedingsPaper;
-                    schema:event ?n.
-                filter(regex(str(?n), '{partName}',"i"))  
+                    schema:title ?publication_venue;
+                    schema:event ?event.
+                filter(regex(str(?event), '{partName}',"i"))  
                         }}
                 """
         QR_10 = get(endpoint,query.format(partName=eventName),True)
@@ -590,7 +594,7 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
         PREFIX schema: <https://schema.org/>
         PREFIX fabio: <http://purl.org/spar/fabio/>
 
-        SELECT ?orcid ?firstName ?surName
+        SELECT ?orcid ?given ?family
         WHERE {{
         VALUES ?type {{schema:ScholarlyArticle schema:Chapter schema:ProceedingsPaper}}
         ?publication rdf:type fabio:Expression ;
@@ -598,8 +602,8 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
                     schema:identifier "{doiQ}";
                     schema:author ?author.
         ?author schema:identifier ?orcid;
-                schema:givenName ?firstName;
-                schema:familyName ?surName.
+                schema:givenName ?given;
+                schema:familyName ?family.
                        
         }}
         """
@@ -639,16 +643,16 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
             PREFIX schema: <https://schema.org/>
             PREFIX fabio: <http://purl.org/spar/fabio/>
 
-            SELECT ?publisher ?crossref ?title
+            SELECT ?publisher ?crossref
             WHERE {{
               VALUES ?type {{schema:Periodical schema:Book schema:EventSeries }}
             ?publication rdf:type fabio:Expression ;
                         schema:identifier "{doi}";
                         schema:isPartOf ?venue.
             ?venue rdf:type ?type;
-                    schema:publisher ?publisher.
-            ?publisher schema:identifier ?crossref;
-                        schema:name ?title.
+                    schema:publisher ?p.
+            ?p schema:identifier ?crossref;
+                        schema:name ?publisher.
                 
             }}
             """
