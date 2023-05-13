@@ -140,18 +140,18 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getVenuesByPublisherId(crossref)
-                print(partial_result)
+                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             # complete_result is now populated by all the results of the query for every query processor
             result = list()   # list[Publication]
-            print(complete_result)
+            #print(complete_result)
             # Drop all duplicate values
             ven_name = set() # unordered collection of unique elements, no worries about duplicates
             # Scroll the complete_result dataframe
             for idx,row in complete_result.iterrows():
                 ven_name.add(row["publication_venue"])
-            print(ven_name)
+            #print(ven_name)
             # Iterate over the cleaned set of publication venue names and create a Venue object for each
             for item in ven_name:
                 # Append the Publication object to the result list

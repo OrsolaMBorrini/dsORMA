@@ -320,8 +320,7 @@ for item in result_q11:
     break
 """
 
-#  Still can get stuck at max recursion !!
-#result_q12 = generic.getPublicationsByAuthorName("per")
+#result_q12 = generic.getPublicationsByAuthorName("Garijo")
 """
 print("Result of query getPublicationsByAuthorName:\n",result_q12)
 print("Type:\n",type(result_q12))
