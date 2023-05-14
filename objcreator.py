@@ -478,7 +478,7 @@ print(dflst_cit)
 # - some Book chapters are probably NaN (checked manually and there seems to be no such problems) # SOLUTION - put empty string, UML allows this
 # - some Publcation Venue Titles are NaN   (this allowed by the UML)
 """
-pub1 = collectPublicationdata("doi:10.1016/j.websem.2021.100655")
+pub1 = createPublicationObj("doi:10.1093/nar/gkz997")
 #print(doi_data_dict)
 print("This is the id of the publication \n",pub1.getIds())
 print("This is the publication year of the publication\n",pub1.getPublicationYear())
