@@ -43,10 +43,14 @@ def readJSON(path):
     # ---------------- REFERENCES DATAFRAME ----------------
     ref_key = list(json_dict.keys())[2]
     ref_dict = json_dict[ref_key]
+    print(len(ref_dict))
 
     for key in ref_dict:
-        for reference in ref_dict[key]:
-            references_DF.loc[len(references_DF.index)] = [key, reference]
+        if len(ref_dict[key]) != 0:
+            for reference in ref_dict[key]:     # for item in list
+                references_DF.loc[len(references_DF.index)] = [key, reference]
+        else:
+            references_DF.loc[len(references_DF.index)] = [key, None]
     # print(references_DF.columns)
 
     # ---------------- PUBLISHERS DATAFRAME ----------------
@@ -155,14 +159,9 @@ print(df6.head(2))
 print(df6.columns)
 '''
 
-#df7,df8,df9,df10 = readJSON("testData/graph_other_data.json")
-'''
-print(df10.columns)
-print(df10.head)
-'''
-'''
-print(df7.columns)
-print(df7.head)
-'''
+""" df7,df8,df9,df10 = readJSON("testData/relational_other_data.json")
+print(len(df9))
 
-
+for idx,row in df9.iterrows():
+    print(row)
+ """
