@@ -8,7 +8,6 @@ from ModelClasses import *
 import sys
 
 sys.setrecursionlimit(10**6)
-#resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
 
 #doi = "doi:10.1016/j.websem.2021.100655"
 dflst_pub = [df1_g,df2_g,df3_g,df1_r,df2_r,df3_r]
@@ -20,8 +19,7 @@ concVEN_df = concVEN_df.rename(columns={'id_doi':'doi'})
 
 concVEN2_df = pd.concat([df8_g,df8_r])
 merged_df = pd.merge(concVEN_df, concVEN2_df, on='doi')
-#print(merged_df)
-#print(merged_df.columns)
+
 
 dflst_org = pd.concat([df10_g,df10_r])
 
@@ -40,7 +38,7 @@ BcDICT = {}
 PpDICT = {}
 
 doi_data_dict = {}
-#print(doi_data_dict)
+
 def createAuthorObj(orcid):
     if  orcid in authDICT:
         return authDICT[orcid]
@@ -105,25 +103,7 @@ def createVenueObj(publication_venue,reqType):
         result_ven = Proceedings(event,title, ids, pub_org)
 
     return result_ven
-'''
-def genCITEDobjects(doi_list,year,title,og_doi,venueOBJ,auths):
-    citList = []
-    self_cit = False
 
-    for doi in doi_list:
-        if doi == og_doi:
-            self_cit = True
-        else:
-            citList.append(createPublicationObj(doi))
-
-    if self_cit == True:
-        OGpub = Publication(year,title,[og_doi],venueOBJ,auths,citList)
-        citList.append(OGpub)
-        return OGpub
-    else:
-        return Publication(year,title,[og_doi],venueOBJ,auths,citList)
-'''
-# call this function to ACTUALLY create pub object
 
 # call this function to iterate over the doi_data dict
 def dataIter(ogkey):
@@ -189,79 +169,6 @@ def update_nested_dictionary(keys, values,ogKey):
     returnedOBJECT = dataIter(ogKey)
     return returnedOBJECT
 
-# a copy of the non-optimised function
-"""
-def createPublicationObj(doi):
-    if doi in pubDICT:
-        return pubDICT[doi]
-    
-    for df in dflst_pub:
-        for idx,row in df.iterrows():
-            if row['id_doi'] == doi:
-                    id_doi = row['id_doi']
-                    title = row['title']
-                    year = row['publication_year']
-
-                    # creating auth objects for the publication
-                    auths = []
-                    autgrp = dflst_aut.groupby(['doi'])
-                    slctauths = autgrp.get_group(doi)
-
-                    avoidauthRepetition = []
-                    for idx,rowA in slctauths.iterrows():
-                        if rowA['orcid'] not in avoidauthRepetition:
-                            avoidauthRepetition.append(rowA['orcid'])
-                            auther = createAuthorObj(rowA['orcid'])
-                            auths.append(auther)
-
-                    # creating venue objects for the publication
-                    # some dois might not have any venue and are thus nan
-                    # so we send an empty venue object for that
-                    if (row['publication_venue']) == np.nan or np.NAN:
-                        venueOBJ = None
-                    else:
-                        print(row['publication_venue'])
-                        venueOBJ = createVenueObj(row['publication_venue'],'venue')     # we need to specift what type of venue object we want
-
-                    # creating citated objects
-                    cited = []
-                    citedDOIS = []
-                    
-                    for idx,row in dflst_cit.iterrows():
-                         if row['doi'] == doi:
-                            citedDF = dflst_cit.groupby(['doi'])
-                            slctDOI = citedDF.get_group(doi)
-                            for idx,row in slctDOI.iterrows():
-                                if row['cited_doi'] not in citedDOIS:
-                                    citedDOIS.append(row['cited_doi'])
-                         else:
-                             continue
-                    
-                    if citedDOIS:
-                        self_cit = 0
-                        for item in citedDOIS:
-                            if item == doi:
-                                self_cit = 1
-                            else:
-                                cited.append(createPublicationObj(item)) 
-                        result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
-                        if self_cit == 1:
-                            cited.append(result_pub)
-                            result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
-
-                        pubDICT.update({doi:result_pub})
-                        return result_pub
-                    
-                     
-                    # creating the publicatiob object as final result
-                    result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
-                    pubDICT.update({doi:result_pub})
-                    return result_pub
-          
-        else:
-            continue
-"""
-
 def createPublicationObj(doi):   
     for df in dflst_pub:
         for idx,row in df.iterrows():
@@ -309,7 +216,6 @@ def createPublicationObj(doi):
 
                 return update_nested_dictionary(keys,values,doi)
 
-
 def createJournalArticleObj(doi):
     if doi in JaDICT:
         return JaDICT[doi]
@@ -336,7 +242,7 @@ def createJournalArticleObj(doi):
                                 vol_no = row['volume']
                             else:
                                 vol_no = None
-            #("Journal Article on WW2",["id1","id2"],[person2],[pub1],ven1, 1944, "issue1","volume1")
+            
             result_JA = JournalArticle(title,id,authrs,cited,venue,year,issue_no,vol_no)
             return result_JA
         
@@ -365,136 +271,3 @@ def createJournalArticleObj(doi):
 
             result_JA = JournalArticle(title,id,authrs,cited,venue,year,issue_no,vol_no)
             return result_JA
-
-# BARD func
-'''
-def createPublicationObj(doi):
-    if doi in pubDICT:
-        return pubDICT[doi]
-
-    stack = []
-    stack.append((doi, None))
-
-    while stack:
-        doi, parent = stack.pop()
-
-        if doi in pubDICT:
-            return pubDICT[doi]
-
-        for df in dflst_pub:
-            for idx,row in df.iterrows():
-                if row['id_doi'] == doi:
-                    id_doi = row['id_doi']
-                    title = row['title']
-                    year = row['publication_year']
-
-                    # creating auth objects for the publication
-                    auths = []
-                    autgrp = dflst_aut.groupby(['doi'])
-                    slctauths = autgrp.get_group(doi)
-
-                    avoidauthRepetition = []
-                    for idx,rowA in slctauths.iterrows():
-                        if rowA['orcid'] not in avoidauthRepetition:
-                            avoidauthRepetition.append(rowA['orcid'])
-                            auther = createAuthorObj(rowA['orcid'])
-                            auths.append(auther)
-
-                    # creating venue objects for the publication
-                    # some dois might not have any venue and are thus nan
-                    # so we send an empty venue object for that
-                    if (row['publication_venue']) == np.nan or np.NAN:
-                        venueOBJ = None
-                    else:
-                        print(row['publication_venue'])
-                        venueOBJ = createVenueObj(row['publication_venue'],'venue')     # we need to specift what type of venue object we want
-
-                    # creating citated objects
-                    cited = []
-                    citedDOIS = []
-    
-                    for idx,row in dflst_cit.iterrows():
-                        if row['doi'] == doi:
-                            citedDF = dflst_cit.groupby(['doi'])
-                            slctDOI = citedDF.get_group(doi)
-                            for idx,row in slctDOI.iterrows():
-                                if row['cited_doi'] not in citedDOIS:
-                                    citedDOIS.append(row['cited_doi'])
-                        else:
-                            continue
-    
-                    if citedDOIS:
-                        self_cit = 0
-                        for item in citedDOIS:
-                            if item == doi:
-                                self_cit = 1
-                            else:
-                                cited.append(createPublicationObj(item)) 
-                        result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
-                        if self_cit == 1:
-                            cited.append(result_pub)
-                            result_pub = Publication(year,title,[id_doi],venueOBJ,auths,cited)
-
-                        pubDICT.update({doi:result_pub})
-                        stack.append((doi, result_pub))
-                        break
-
-    return None
-'''
-# works but both the dbs need to be created for the import to work in the appropriate way
-#print(df1_g)
-#print(df1_r)
-
-#createPublicationObj(doi)
-
-#ven1 = createVenueObj("Trip to the Pork",'venue')
-#print(type(ven1))
-
-#pers1 = createAuthorObj("0000-0002-3938-2064")
-#print(type(pers1))
-'''
-pub1 = createPublicationObj('doi:10.1007/978-3-030-59621-7_2')
-print(type(pub1))
-print("This is the id of the publication \n",pub1.getIds())
-print("This is the publication year of the publication\n",pub1.getPublicationYear())
-print("This is the title of the publication",pub1.getTitle())
-print("This is the cited publications of the publication", pub1.getCitedPublications())
-print("This is the publication venue of the publication",pub1.getPublicationVenue())
-print("This is the authors of the publication",pub1.getAuthors())
-'''
-
-# doi:10.1016/j.websem.2021.100655
-# doi:10.1007/s10115-017-1100-y
-# doi:10.1007/s10115-019-01401-x
-# pub2 = createPublicationObj('doi:10.1016/j.websem.2021.100655')
-
-'''
-pub2 = createJournalArticleObj('doi:10.1016/j.websem.2021.100655')
-print(type(pub2))
-print("This is the id of the publication \n",pub2.getIds())
-print("This is the publication year of the publication\n",pub2.getPublicationYear())
-print("This is the title of the publication",pub2.getTitle())
-print("This is the cited publications of the publication", pub2.getCitedPublications())
-print("This is the publication venue of the publication",pub2.getPublicationVenue())
-print("This is the authors of the publication",pub2.getAuthors()) 
-
-print(df9_g)
-print(df9_r)
-print(dflst_cit)
-'''
-
-# CURRENT PROBLEMS : 
-# - some issue values are NaN (this allowed by the UML)  # SOLUTION - put empty string, UML allows this
-# - some Volume are probably Nan (this allowed by the UML)  # SOLUTION - put empty string, UML allows this
-# - some Book chapters are probably NaN (checked manually and there seems to be no such problems) # SOLUTION - put empty string, UML allows this
-# - some Publcation Venue Titles are NaN   (this allowed by the UML)
-"""
-pub1 = createPublicationObj("doi:10.1093/nar/gkz997")
-#print(doi_data_dict)
-print("This is the id of the publication \n",pub1.getIds())
-print("This is the publication year of the publication\n",pub1.getPublicationYear())
-print("This is the title of the publication",pub1.getTitle())
-print("This is the cited publications of the publication", pub1.getCitedPublications())
-print("This is the publication venue of the publication",pub1.getPublicationVenue())
-print("This is the authors of the publication",pub1.getAuthors())
-"""
