@@ -6,7 +6,6 @@ import pandas as pd
 from ModelClasses import *
 
 import sys
-import resource
 
 sys.setrecursionlimit(10**6)
 #resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
@@ -328,8 +327,14 @@ def createJournalArticleObj(doi):
                 for idx,row in df.iterrows():
                     if row['id_doi'] == doi:
                         if row['type'] == 'journal-article':
-                            issue_no = row['issue']
-                            vol_no = row['volume']
+                            if (row['issue']) != np.nan or np.NAN:
+                                issue_no = row['issue']
+                            else:
+                                issue_no = None
+                            if (row['volume']) != np.nan or np.NAN:
+                                vol_no = row['volume']
+                            else:
+                                vol_no = None
 
             result_JA = JournalArticle(issue_no,vol_no,year,title,id,venue,authrs,cited)
             return result_JA
@@ -348,8 +353,14 @@ def createJournalArticleObj(doi):
                 for idx,row in df.iterrows():
                     if row['id_doi'] == doi:
                         if row['type'] == 'journal-article':
-                            issue_no = row['issue']
-                            vol_no = row['volume']
+                            if (row['issue']) != np.nan or np.NAN:
+                                issue_no = row['issue']
+                            else:
+                                issue_no = None
+                            if (row['volume']) != np.nan or np.NAN:
+                                vol_no = row['volume']
+                            else:
+                                vol_no = None
 
             result_JA = JournalArticle(issue_no,vol_no,year,title,id,venue,authrs,cited)
             return result_JA
