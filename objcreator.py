@@ -41,7 +41,7 @@ BcDICT = {}
 PpDICT = {}
 
 doi_data_dict = {}
-print(doi_data_dict)
+#print(doi_data_dict)
 def createAuthorObj(orcid):
     if  orcid in authDICT:
         return authDICT[orcid]
@@ -168,7 +168,6 @@ def dataIter(ogkey):
                 citedOBJ.append(tempPub)
                 pubDICT.update({ogkey:Publication(year,title,[id_doi],venueOBJ,auths,citedOBJ)})
                 return Publication(year,title,[id_doi],venueOBJ,auths,citedOBJ)
-
 
 
 # call this function to update the data of required DOIs to the dict
