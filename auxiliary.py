@@ -44,7 +44,7 @@ def readJSON(path):
     # ---------------- REFERENCES DATAFRAME ----------------
     ref_key = list(json_dict.keys())[2]
     ref_dict = json_dict[ref_key]
-    print(len(ref_dict))
+    #print(len(ref_dict))
 
     for key in ref_dict:
         if len(ref_dict[key]) != 0:

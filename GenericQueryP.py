@@ -83,6 +83,7 @@ class GenericQueryProcessor(object):
             partial_result = item.getPubCitationCount()
             complete_result = pd.concat([complete_result,partial_result])
         
+        complete_result = complete_result.dropna()
         # Get set of unique cited_doi (column 'cited_doi')
         unique_citedDoi = set()
         for idx,row in complete_result.iterrows():
