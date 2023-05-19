@@ -1,17 +1,5 @@
 # Implementation of the UML data model via Python classes
 
-'''
-class <class name>(<superclass 1>,<superclass 2>, ...):
-    def __init__(self, <param 1>, <param 2>, ...)   -> constructor of an object of that class
-
-! All the methods of a class, including its constructor __init__, MUST specify "self" as the first parameter !
-
-! In Python relations can be represented as the other attributes (e.g. by assigning some specific values to self-declared variables) !
-
-
-'''
-
-
 class IdentifiableEntity(object):
     # -- Constructor
     def __init__(self, identifiers):
@@ -125,7 +113,7 @@ print("NAME OF THE PUBLISHER\n",ven1.getPublisher().getName()) """
 
 class Publication(IdentifiableEntity):
     # -- Constructor
-    def __init__(self, publicationYear, title, identifiers, publicationVenue, author, cites):
+    def __init__(self, title, identifiers, author, cites, publicationVenue=None, publicationYear=None):
         self.publicationYear = publicationYear
         self.title = title
 
@@ -156,7 +144,8 @@ class Publication(IdentifiableEntity):
             result.add(person)
         return result
 
-#pub1 = Publication(1963, "The Name of the Rose", ["abc1001","cba1001"], ven1,[person1,person2],[])
+#pub1 = Publication("The Name of the Rose", ["abc1001","cba1001"],[person1,person2],[],ven1,1963)
+# Input parameters: title, ids, authors, cites,pubVenue,, pubYear
 '''
 print(pub1)
 print(type(pub1))
@@ -170,12 +159,12 @@ print("This is the authors of the publication",pub1.getAuthors())
 
 class JournalArticle(Publication):
     # -- Constructor
-    def __init__(self, issue, volume, publicationYear, title, identifiers, publicationVenue, author, cites):
+    def __init__(self, title, identifiers, author, cites, publicationVenue=None, publicationYear=None, issue=None, volume=None):
         self.issue = issue
         self.volume = volume
 
         # --- Upperclass parameters
-        super().__init__(publicationYear, title, identifiers, publicationVenue, author, cites)
+        super().__init__(title, identifiers, author, cites, publicationVenue, publicationYear)
     
     # -- Methods
     def getIssue(self):
@@ -184,7 +173,7 @@ class JournalArticle(Publication):
     def getVolume(self):
         return self.volume
     
-# journal_article1 = JournalArticle("issue1","volume1",1944,"Journal Article on WW2",["id1","id2"],ven1,[person2],[pub1])
+# journal_article1 = JournalArticle("Journal Article on WW2",["id1","id2"],[person2],[pub1],ven1, 1944, "issue1","volume1")
 """ print(journal_article1)
 print(type(journal_article1))
 print(journal_article1.getIssue())
@@ -200,17 +189,17 @@ print(journal_article1.getPublicationVenue())
 
 class BookChapter(Publication):
     # -- Constructor
-    def __init__(self, chapterNumber, publicationYear, title, identifiers, publicationVenue, author, cites):
+    def __init__(self, chapterNumber, title, identifiers, author, cites, publicationVenue=None, publicationYear=None):
         self.chapterNumber = chapterNumber
 
         # --- Upperclass parameters
-        super().__init__(publicationYear, title, identifiers, publicationVenue, author, cites)
+        super().__init__(title, identifiers, author, cites, publicationVenue, publicationYear)
     
     # -- Methods
     def getChapterNumber(self):
         return self.chapterNumber
 
-""" book_chapter1 = BookChapter(1,1944,"Book on WW2",["id11","id12"],ven1,[person1],[pub1])
+""" book_chapter1 = BookChapter(1,"Book on WW2",["id11","id12"],[person1],[pub1],ven1,1944)
 print(book_chapter1)
 print(type(book_chapter1))
 print(book_chapter1.getChapterNumber())
@@ -227,7 +216,7 @@ print("--------------------- \n ------------------- \n -----------------") """
 class ProceedingsPaper(Publication):
     pass
 
-""" proceedings_paper1 = ProceedingsPaper(1963, "The Name of the Rose", ["abc1001","cba1001"], ven1,[person1,person2],[])
+""" proceedings_paper1 = ProceedingsPaper("The Name of the Rose", ["abc1001","cba1001"],[person1,person2],[],ven1,1963)
 print(proceedings_paper1)
 print(type(proceedings_paper1))
 
