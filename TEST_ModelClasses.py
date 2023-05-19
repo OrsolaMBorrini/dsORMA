@@ -54,7 +54,7 @@ print("This is the familyName of person1\n",person1.getFamilyName())
 print("This is the givenName of person1\n",person1.getGivenName())
 print(person1.getIds())
 """
-#person2 = Person("Francesca","Budel",["FraB99","Fra99"])
+person2 = Person("Francesca","Budel",["FraB99","Fra99"])
 
 class Organization(IdentifiableEntity):
     # -- Constructor
@@ -146,7 +146,7 @@ class Publication(IdentifiableEntity):
 
 #pub1 = Publication("The Name of the Rose", ["abc1001","cba1001"],[person1,person2],[],ven1,1963)
 # Input parameters: title, ids, authors, cites,pubVenue,, pubYear
-'''
+"""
 print(pub1)
 print(type(pub1))
 print(pub1.getIds())
@@ -155,7 +155,7 @@ print("This is the title of the publication",pub1.getTitle())
 print("This is the cited publications of the publication", pub1.getCitedPublications())
 print("This is the publication venue of the publication",pub1.getPublicationVenue())
 print("This is the authors of the publication",pub1.getAuthors())
-'''
+"""
 
 class JournalArticle(Publication):
     # -- Constructor
@@ -173,8 +173,9 @@ class JournalArticle(Publication):
     def getVolume(self):
         return self.volume
     
-# journal_article1 = JournalArticle("Journal Article on WW2",["id1","id2"],[person2],[pub1],ven1, 1944, "issue1","volume1")
-""" print(journal_article1)
+#journal_article1 = JournalArticle("Journal Article on WW2",["id1","id2"],[person2],[pub1],ven1, 1944, "issue1","volume1")
+"""
+print(journal_article1)
 print(type(journal_article1))
 print(journal_article1.getIssue())
 print(journal_article1.getVolume())
@@ -185,7 +186,7 @@ print(journal_article1.getIds())
 print(journal_article1.getPublicationYear())
 print(journal_article1.getTitle())
 print(journal_article1.getPublicationVenue())
- """
+"""
 
 class BookChapter(Publication):
     # -- Constructor

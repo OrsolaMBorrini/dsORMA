@@ -97,7 +97,7 @@ class Venue(IdentifiableEntity):
 
 
 #ven1 = Venue("Belmeloro Venue", ["belm0000", "belm1111"], org1)
-""" 
+"""
 print(ven1)
 print(type(ven1))
 
@@ -108,8 +108,8 @@ print("This is the ID of the venue", ven1.getIds())
 print("------------------------------------ \n ------------------------------")
 
 print("ID OF THE PUBLISHER\n",ven1.getPublisher().getIds())
-print("NAME OF THE PUBLISHER\n",ven1.getPublisher().getName()) """
-
+print("NAME OF THE PUBLISHER\n",ven1.getPublisher().getName())
+"""
 
 class Publication(IdentifiableEntity):
     # -- Constructor
@@ -145,7 +145,7 @@ class Publication(IdentifiableEntity):
         return result
 
 #pub1 = Publication(1963, "The Name of the Rose", ["abc1001","cba1001"], ven1,[person1,person2],[])
-'''
+"""
 print(pub1)
 print(type(pub1))
 print(pub1.getIds())
@@ -154,7 +154,7 @@ print("This is the title of the publication",pub1.getTitle())
 print("This is the cited publications of the publication", pub1.getCitedPublications())
 print("This is the publication venue of the publication",pub1.getPublicationVenue())
 print("This is the authors of the publication",pub1.getAuthors())
-'''
+"""
 
 class JournalArticle(Publication):
     # -- Constructor
@@ -172,8 +172,9 @@ class JournalArticle(Publication):
     def getVolume(self):
         return self.volume
     
-# journal_article1 = JournalArticle("issue1","volume1",1944,"Journal Article on WW2",["id1","id2"],ven1,[person2],[pub1])
-""" print(journal_article1)
+#journal_article1 = JournalArticle("issue1","volume1",1944,"Journal Article on WW2",["id1","id2"],ven1,[person2],[pub1])
+"""
+print(journal_article1)
 print(type(journal_article1))
 print(journal_article1.getIssue())
 print(journal_article1.getVolume())
@@ -184,7 +185,7 @@ print(journal_article1.getIds())
 print(journal_article1.getPublicationYear())
 print(journal_article1.getTitle())
 print(journal_article1.getPublicationVenue())
- """
+"""
 
 class BookChapter(Publication):
     # -- Constructor

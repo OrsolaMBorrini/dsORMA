@@ -194,8 +194,8 @@ for item in result_q6:
     break
  """
 
-#result_q7 = generic.getJournalArticlesInIssue("1","1","issn:2641-3337")
-""" print("Result of query getJournalArticlesInIssue:\n",result_q7)
+result_q7 = generic.getJournalArticlesInIssue("1","1","issn:2641-3337")
+print("Result of query getJournalArticlesInIssue:\n",result_q7)
 print("Type:\n",type(result_q7))
 for item in result_q7:
     print("getPublicationYear:\n",item.getPublicationYear())
@@ -223,7 +223,7 @@ for item in result_q7:
         print("getAuthors().getIds()",author.getIds())
         break
     break
-"""
+
 
 #result_q8 = generic.getJournalArticlesInVolume("72","issn:1022-2588")
 """

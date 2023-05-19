@@ -156,17 +156,18 @@ def dataIter(ogkey):
             citedOBJ = []
             if not doi_data_dict[k][6]:
                 pubDICT.update({ogkey:Publication(year,title,[id_doi],venueOBJ,auths,citedOBJ)})
-                return Publication(year,title,[id_doi],venueOBJ,auths,citedOBJ)
+                #title, ids, authors, cites,pubVenue pubYear,
+                return Publication(title,[id_doi],auths,citedOBJ,venueOBJ,year)
             else:
                 for item in doi_data_dict[k][6]:
                     if item == ogkey:
                         self_cit = True
                     else:
                         citedOBJ.append(pubcreator(item))
-                tempPub = Publication(year,title,[id_doi],venueOBJ,auths,citedOBJ)
+                tempPub = Publication(title,[id_doi],auths,citedOBJ,venueOBJ,year)
                 citedOBJ.append(tempPub)
-                pubDICT.update({ogkey:Publication(year,title,[id_doi],venueOBJ,auths,citedOBJ)})
-                return Publication(year,title,[id_doi],venueOBJ,auths,citedOBJ)
+                pubDICT.update({ogkey:Publication(title,[id_doi],auths,citedOBJ,venueOBJ,year)})
+                return Publication(title,[id_doi],auths,citedOBJ,venueOBJ,year)
 
 
 # call this function to update the data of required DOIs to the dict
@@ -335,8 +336,8 @@ def createJournalArticleObj(doi):
                                 vol_no = row['volume']
                             else:
                                 vol_no = None
-
-            result_JA = JournalArticle(issue_no,vol_no,year,title,id,venue,authrs,cited)
+            #("Journal Article on WW2",["id1","id2"],[person2],[pub1],ven1, 1944, "issue1","volume1")
+            result_JA = JournalArticle(title,id,authrs,cited,venue,year,issue_no,vol_no)
             return result_JA
         
         else:
@@ -362,7 +363,7 @@ def createJournalArticleObj(doi):
                             else:
                                 vol_no = None
 
-            result_JA = JournalArticle(issue_no,vol_no,year,title,id,venue,authrs,cited)
+            result_JA = JournalArticle(title,id,authrs,cited,venue,year,issue_no,vol_no)
             return result_JA
 
 # BARD func
