@@ -1,5 +1,6 @@
 import pandas as pd
 import json as js
+import numpy as np
 from ModelClasses import *
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 from sparql_dataframe import get
@@ -47,7 +48,7 @@ def readJSON(path):
 
     for key in ref_dict:
         if len(ref_dict[key]) != 0:
-            for reference in ref_dict[key]:     # for item in list
+            for reference in ref_dict[key]:     # for item in list of cited_dois
                 references_DF.loc[len(references_DF.index)] = [key, reference]
         else:
             references_DF.loc[len(references_DF.index)] = [key, None]
@@ -64,7 +65,6 @@ def readJSON(path):
 
     return authors_DF, venuesID_DF, references_DF, publishers_DF
 
-# !!!!! -------------------- CHANGE "id" columns to "doi" columns
 def readCSV(path):
     D0 = pd.read_csv(path, header=0,encoding='utf-8')
 
@@ -104,6 +104,13 @@ def readCSV(path):
     VePE_df = filtered_df.drop(columns=['title', 'type', 'publication_year', 'issue', 'volume', 'chapter'])
     VePE_df = VePE_df.rename(columns={'id':'id_doi','publisher':'id_crossref'})
     
+    # Replace all NaN values with None
+    JA_df = JA_df.replace(np.nan, None)
+    BC_df = BC_df.replace(np.nan, None)
+    PP_df = PP_df.replace(np.nan, None)
+    VeB_df = VeB_df.replace(np.nan, None)
+    VeJ_df = VeJ_df.replace(np.nan, None)
+    VePE_df = VePE_df.replace(np.nan, None)
 
     return JA_df, BC_df, PP_df, VeB_df, VeJ_df, VePE_df
 
@@ -139,6 +146,7 @@ def createJournalArticleObj(doi,issue,volume):
 # testing area
 
 #df1,df2,df3,df4,df5,df6 = readCSV("testData/relational_publications.csv")
+
 '''
 print(df1.head(2))
 print(df1.columns)
@@ -161,7 +169,4 @@ print(df6.columns)
 
 """ df7,df8,df9,df10 = readJSON("testData/relational_other_data.json")
 print(len(df9))
-
-for idx,row in df9.iterrows():
-    print(row)
  """

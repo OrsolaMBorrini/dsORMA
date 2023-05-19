@@ -1,17 +1,5 @@
 # Implementation of the UML data model via Python classes
 
-'''
-class <class name>(<superclass 1>,<superclass 2>, ...):
-    def __init__(self, <param 1>, <param 2>, ...)   -> constructor of an object of that class
-
-! All the methods of a class, including its constructor __init__, MUST specify "self" as the first parameter !
-
-! In Python relations can be represented as the other attributes (e.g. by assigning some specific values to self-declared variables) !
-
-
-'''
-
-
 class IdentifiableEntity(object):
     # -- Constructor
     def __init__(self, identifiers):
@@ -125,7 +113,7 @@ print("NAME OF THE PUBLISHER\n",ven1.getPublisher().getName()) """
 
 class Publication(IdentifiableEntity):
     # -- Constructor
-    def __init__(self, publicationYear, title, identifiers, publicationVenue, author, cites):
+    def __init__(self, title, identifiers, author, cites, publicationVenue=None, publicationYear=None):
         self.publicationYear = publicationYear
         self.title = title
 
@@ -170,12 +158,12 @@ print("This is the authors of the publication",pub1.getAuthors())
 
 class JournalArticle(Publication):
     # -- Constructor
-    def __init__(self, issue, volume, publicationYear, title, identifiers, publicationVenue, author, cites):
+    def __init__(self, title, identifiers, author, cites, publicationVenue=None, publicationYear=None, issue=None, volume=None):
         self.issue = issue
         self.volume = volume
 
         # --- Upperclass parameters
-        super().__init__(publicationYear, title, identifiers, publicationVenue, author, cites)
+        super().__init__(title, identifiers, author, cites, publicationVenue, publicationYear)
     
     # -- Methods
     def getIssue(self):
@@ -200,11 +188,11 @@ print(journal_article1.getPublicationVenue())
 
 class BookChapter(Publication):
     # -- Constructor
-    def __init__(self, chapterNumber, publicationYear, title, identifiers, publicationVenue, author, cites):
+    def __init__(self, chapterNumber, title, identifiers, author, cites, publicationVenue=None, publicationYear=None):
         self.chapterNumber = chapterNumber
 
         # --- Upperclass parameters
-        super().__init__(publicationYear, title, identifiers, publicationVenue, author, cites)
+        super().__init__(title, identifiers, author, cites, publicationVenue, publicationYear)
     
     # -- Methods
     def getChapterNumber(self):
