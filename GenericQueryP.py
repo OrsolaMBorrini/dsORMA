@@ -30,19 +30,16 @@ class GenericQueryProcessor(object):
             for item in self.queryProcessor:
                 # For every query processor added to the generic query processor, call the query
                 partial_result = item.getPublicationsPublishedInYear(year)
-                #print(partial_result)
                 # Concatenate the result of this query (type DataFrame) to the empty df outside of the for-in cycle to *save* the result
                 complete_result = pd.concat([complete_result,partial_result])
             
             # complete_result is now populated by all the results of the query for every query processor
             result = list()   # list[Publication]
-            #print(complete_result)
             # Drop all duplicate values
             ids = set() # unordered collection of unique elements, no worries about duplicates
             # Scroll the complete_result dataframe
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
-            #print(ids)
             # Iterate over the cleaned set of DOIs and create a Publication object for each
             for item in ids:
                 # Append the Publication object to the result list
@@ -59,16 +56,13 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getPublicationsByAuthorId(orcid)
-                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result]) 
             
             result = list()   # list[Publication]
-            #print(complete_result)
             # Drop duplicate ids
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
-            #print(ids)
             for item in ids:
                 result.append(createPublicationObj(item))
             
@@ -141,18 +135,15 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getVenuesByPublisherId(crossref)
-                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             # complete_result is now populated by all the results of the query for every query processor
             result = list()   # list[Publication]
-            #print(complete_result)
             # Drop all duplicate values
             ven_name = set() # unordered collection of unique elements, no worries about duplicates
             # Scroll the complete_result dataframe
             for idx,row in complete_result.iterrows():
                 ven_name.add(row["publication_venue"])
-            #print(ven_name)
             # Iterate over the cleaned set of publication venue names and create a Venue object for each
             for item in ven_name:
                 # Append the Publication object to the result list
@@ -169,16 +160,13 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getPublicationInVenue(issn_isbn)
-                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result]) 
             
             result = list()   # list[Publication]
-            #print(complete_result)
             # Drop duplicate ids
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
-            #print(ids)
             for item in ids:
                 result.append(createPublicationObj(item))
             
@@ -192,11 +180,9 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getJournalArticlesInIssue(issue,volume,journalId)
-                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             result = list()
-            #print(complete_result)
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
@@ -214,11 +200,9 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getJournalArticlesInVolume(volume,journalId)
-                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             result = list()
-            #print(complete_result)
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
@@ -236,16 +220,13 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getJournalArticlesInJournal(journalId)
-                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             result = list()
-            #print(complete_result)
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
 
-            #print(ids)
             for item in ids:
                 result.append(createJournalArticleObj(item))
             
@@ -259,7 +240,6 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getProceedingsByEvent(eventPartialName)
-                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
 
             result = list()
@@ -267,7 +247,6 @@ class GenericQueryProcessor(object):
             ven_name = set()
             for idx,row in complete_result.iterrows():
                 ven_name.add(row["publication_venue"])
-            #print(ven_name)
             for item in ven_name:
                 result.append(createVenueObj(item,"proceedings"))
 
@@ -282,15 +261,12 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getPublicationAuthors(doi)
-                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
 
             result = list()
-            #print(complete_result)
             orcid = set()
             for idx,row in complete_result.iterrows():
                 orcid.add(row["orcid"])
-            #print(orcid)
             for item in orcid:
                 result.append(createAuthorObj(item))
             
@@ -305,15 +281,12 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getPublicationsByAuthorName(authorPartialName)
-                #print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
 
             result = list()
-            #print(complete_result)
             ids = set()
             for idx,row in complete_result.iterrows():
                 ids.add(row["doi"])
-            #print(ids)
             for item in ids:
                 result.append(createPublicationObj(item))
 
@@ -328,15 +301,12 @@ class GenericQueryProcessor(object):
             complete_result = pd.DataFrame()
             for item in self.queryProcessor:
                 partial_result = item.getDistinctPublishersOfPublications(doiList)
-                print(partial_result)
                 complete_result = pd.concat([complete_result,partial_result])
             
             result = list()
-            print(complete_result)
             crossrefs = set()
             for idx,row in complete_result.iterrows():
                 crossrefs.add(row["crossref"])
-            print(crossrefs)
             for item in crossrefs:
                 result.append(createPublisherObj(item))
 
