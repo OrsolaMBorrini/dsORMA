@@ -18,7 +18,7 @@ concVEN_df = pd.concat([df4_g, df5_g, df6_g,df4_r,df5_r,df6_r])
 concVEN_df = concVEN_df.rename(columns={'id_doi':'doi'})
 
 concVEN2_df = pd.concat([df8_g,df8_r])
-merged_df = pd.merge(concVEN_df, concVEN2_df, on='doi')
+#merged_df = pd.merge(concVEN_df, concVEN2_df, on='doi')
 
 
 dflst_org = pd.concat([df10_g,df10_r])
@@ -66,9 +66,9 @@ def createPublisherObj(orgid):
                     # we should save the created object in a dict for future use so we dont have to create an already created
                     # publisher object
                     orgDICT.update({orgid:result_org})
-            return result_org
-
-def createVenueObj(publication_venue,reqType):
+                    return result_org
+"""
+def oldVENobj(publication_venue,reqType):
     if publication_venue in venDICT and reqType == 'venue':
         return venDICT[publication_venue]
 
@@ -87,6 +87,51 @@ def createVenueObj(publication_venue,reqType):
         orgid = row['id_crossref']
         if isinstance(row['event'],str):
             event = row['event']
+
+    # make the publisher obj for this venue
+    pub_org = createPublisherObj(orgid)
+    if reqType == 'venue':
+         result_ven = Venue(title,ids,pub_org)
+         venDICT.update({publication_venue:result_ven})
+         return result_ven
+    
+    if type == "journal":
+        result_ven = Journal(title, ids, pub_org)
+    elif type == "book":
+        result_ven = Book(title, ids, pub_org)
+    elif type == "proceedings":
+        result_ven = Proceedings(event,title, ids, pub_org)
+
+    return result_ven
+"""
+def createVenueObj(publication_venue,reqType):
+    if publication_venue in venDICT and reqType == 'venue':
+        return venDICT[publication_venue]
+
+    """
+    grpOB = merged_df.groupby(['publication_venue'])
+    req_Ven = grpOB.get_group(publication_venue)
+    """
+    # there might be many issn_isbn for one single venue
+    #print(req_Ven.head())
+    ohdoi = ""
+    ids = set()
+    orgid = ""
+    title = ""
+    type = ""
+    event = ""
+    for idx,row in concVEN_df.iterrows():
+        if row['publication_venue']==publication_venue:
+            ohdoi = row['doi']
+            title = row['publication_venue']
+            type = row['venue_type']
+            orgid = row['id_crossref']
+            if isinstance(row['event'],str):
+                event = row['event']
+
+    for ifx,row in concVEN2_df.iterrows():
+        if row['doi'] == ohdoi:
+            ids.add(row['issn_isbn'])
 
     # make the publisher obj for this venue
     pub_org = createPublisherObj(orgid)
@@ -167,9 +212,10 @@ def update_nested_dictionary(keys, values,ogKey):
 
     # iterate over the populated doi_data_dict to create objects
     returnedOBJECT = dataIter(ogKey)
+    print(type(returnedOBJECT))
     return returnedOBJECT
 
-def createPublicationObj(doi):   
+def createPublicationObj(doi):  
     for df in dflst_pub:
         for idx,row in df.iterrows():
             if row['id_doi'] == doi:

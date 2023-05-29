@@ -15,8 +15,8 @@ from GenericQueryP import GenericQueryProcessor
 rel_path = "relational.db"
 rel_dp = RelationalDataProcessor()
 rel_dp.setDbPath(rel_path)
-#rel_dp.uploadData("testData/relational_publications.csv")
-#rel_dp.uploadData("testData/relational_other_data.json")
+rel_dp.uploadData("testData/relational_publications.csv")
+rel_dp.uploadData("testData/relational_other_data.json")
 
 
 # Then, create the RDF triplestore (remember first to run the
@@ -195,7 +195,7 @@ for item in result_q6:
     break
  """
 
-result_q7 = generic.getJournalArticlesInIssue("1","1","issn:2641-3337")
+#result_q7 = generic.getJournalArticlesInIssue("1","1","issn:2641-3337")
 """
 print("Result of query getJournalArticlesInIssue:\n",result_q7)
 print("Type:\n",type(result_q7))
@@ -227,7 +227,7 @@ for item in result_q7:
     break
 """
 
-result_q8 = generic.getJournalArticlesInVolume("72","issn:1022-2588")
+#result_q8 = generic.getJournalArticlesInVolume("72","issn:1022-2588")
 """
 print("Result of query getJournalArticlesInVolume:\n",result_q8)    # [<ModelClasses.JournalArticle object at 0x000001EC2A027B80>]
 print("Type:\n",type(result_q8))
@@ -263,7 +263,7 @@ for item in result_q8:
     break
 """
 
-result_q9 = generic.getJournalArticlesInJournal("issn:2514-9288")
+#result_q9 = generic.getJournalArticlesInJournal("issn:2514-9288")
 """ print("Result of query getJournalArticlesInJournal:\n",result_q9)
 print("Type:\n",type(result_q9))   
 for item in result_q9:
