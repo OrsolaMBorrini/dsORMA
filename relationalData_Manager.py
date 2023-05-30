@@ -306,3 +306,38 @@ class RelationalQueryProcessor(QueryProcessor, RelationalProcessor):
             result = cur.fetchall()            
             qrdb.commit()
         return pd.DataFrame(data=result,columns=["doi","cited_doi","venue_name"])
+
+        
+# ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+
+# TEST AREA
+rel_path = "relational.db"
+rel_dp = RelationalDataProcessor()
+rel_dp.setDbPath(rel_path)
+rel_dp.uploadData("testData/new_relational_publications.csv")
+rel_dp.uploadData("testData/new_relational_other_data.json")
+
+# Checking the superclass is correct or not
+# print(rel_dp.__bases__)
+
+rel_qp = RelationalQueryProcessor()
+rel_qp.setDbPath(rel_path)
+
+""" q1 = rel_qp.getPublicationsPublishedInYear(2020)
+q2 = rel_qp.getPublicationsByAuthorId("0000-0003-0530-4305")
+q3 = rel_qp.getMostCitedPublication()
+q4 = rel_qp.getMostCitedVenue()
+q5 = rel_qp.getVenuesByPublisherId("crossref:301")
+q6 = rel_qp.getPublicationInVenue("issn:2641-3337")
+q7 = rel_qp.getJournalArticlesInIssue("10","126","issn:0138-9130")
+q8 = rel_qp.getJournalArticlesInVolume("126","issn:0138-9130")
+q9 = rel_qp.getJournalArticlesInJournal("issn:0138-9130")
+q10 = rel_qp.getProceedingsByEvent("arz")
+q11 = rel_qp.getPublicationAuthors("doi:10.1007/s11192-021-04097-5")
+q12 = rel_qp.getPublicationsByAuthorName("Per")
+q13 = rel_qp.getDistinctPublishersOfPublications(["doi:10.1007/978-3-030-61244-3_16","doi:10.1371/journal.pbio.3000385","doi:10.1007/s11192-018-2796-5"])
+ """
+
+# Checking the superclass is correct or not
+# print(rel_qp.__bases__) """

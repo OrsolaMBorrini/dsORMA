@@ -44,7 +44,7 @@ def readJSON(path):
     # ---------------- REFERENCES DATAFRAME ----------------
     ref_key = list(json_dict.keys())[2]
     ref_dict = json_dict[ref_key]
-    #print(len(ref_dict))
+    #print(len(ref_dict))   we were printing this to see that the citation df is populated correctly
 
     for key in ref_dict:
         if len(ref_dict[key]) != 0:
@@ -137,3 +137,36 @@ def check_repetedDOI():
 def createJournalArticleObj(doi,issue,volume):
     return True
 
+
+
+
+
+
+
+# testing area
+
+#df1,df2,df3,df4,df5,df6 = readCSV("testData/relational_publications.csv")
+
+'''
+print(df1.head(2))
+print(df1.columns)
+print('/n')
+print(df2.head(2))
+print(df2.columns)
+print('/n')
+print(df3.head(2))
+print(df3.columns)
+print('/n')
+print(df4.head(2))
+print(df4.columns)
+print('/n')
+print(df5.head(2))
+print(df5.columns)
+print('/n')
+print(df6.head(2))
+print(df6.columns)
+'''
+
+""" df7,df8,df9,df10 = readJSON("testData/relational_other_data.json")
+print(len(df9))
+ """

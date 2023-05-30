@@ -705,3 +705,71 @@ class TriplestoreQueryProcessor(QueryProcessor,TriplestoreProcessor):
 
 # ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
+# TEST AREA
+
+grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
+grp_dp = TriplestoreDataProcessor()
+grp_dp.setEndpointUrl(grp_endpoint)
+grp_dp.uploadData("testData/graph_publications.csv")
+grp_dp.uploadData("testData/graph_other_data.json")
+
+# Checking the superclass is correct or not
+# print(grp_dp.__bases__)
+
+grp_qp = TriplestoreQueryProcessor()
+grp_qp.setEndpointUrl(grp_endpoint)
+
+'''
+for i in publisherURIs:
+    print (i, publisherURIs[i])
+'''
+
+'''
+Q1 = grp_qp.getPublicationsPublishedInYear(2020)
+#print(Q1)
+
+Q2 = grp_qp.getPublicationsByAuthorId("0000-0003-2717-6949")
+#print(Q2)
+
+Q3 = grp_qp.getMostCitedPublication()
+#print(Q3)
+
+Q4 = grp_qp.getMostCitedVenue()
+#print(Q4)
+
+Q5 = grp_qp.getVenuesByPublisherId("crossref:286")
+print(Q5)
+
+Q6 = grp_qp.getPublicationInVenue("issn:1570-8268")
+print(Q6)
+
+Q7 = grp_qp.getJournalArticlesInIssue("3","55","issn:0219-1377")
+print(Q7)
+
+Q8 = grp_qp.getJournalArticlesInVolume("55","issn:0219-1377")
+print(Q8)
+
+Q9 = grp_qp.getJournalArticlesInJournal("issn:0219-1377")
+print(Q9)
+
+Q10 = grp_qp.getProceedingsByEvent("we_dont_have_events")
+print(Q10)
+
+Q11 = grp_qp.getPublicationAuthors("doi:10.1016/j.websem.2014.03.003")
+print(Q11)
+
+Q12 = grp_qp.getPublicationsByAuthorName("wang")
+print(Q12)
+
+Q13 = grp_qp.getDistinctPublisherOfPublications(["doi:10.1016/j.websem.2014.03.003","doi:10.1093/nar/gkz997"])
+print(Q13)
+'''
+
+'''
+Q13 = grp_qp.getPublicationsByAuthorId("0000-0003-2717-6949")
+print(Q13)
+'''
+
+""" Q14 = grp_qp.getPubCitationCount()
+print(Q14) """
+
